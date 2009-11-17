@@ -1,0 +1,57 @@
+
+<html>
+
+<table width=100%><tr>
+    <td align=left><a href="updates_shmem.html">&lt;- Dynamic Updates using Shared Memory</a></td>
+    <td align=right> &nbsp; </td>
+</tr></table>
+<hr>
+<h2>Dynamic Updates Using the GUI</h2>
+
+  <p>
+  Lastly, a simple Graphical User Interface (GUI) is provided, compiled with 
+  FLTK for simplicity and platform independence.  The GUI uses a shared memory
+  interface to update the <b>EphemerisData</b> values.  It has the following 
+  appearance.
+
+  <p>
+  <table cellpadding=10>
+    <tr>
+      <td> <img src=gui.jpg> </td>
+      <td valign=top>
+      Each of the text fields are a nifty FLTK Input_Valuator, which allow the
+      user to either enter values directly from the keyboard, or click and 
+      drag on the values to increment/decrement them.  Use of left, middle
+      or right mouse button determine the step of incrementation.
+
+      <p>
+      Latitude can be set from -90 to 90.  Longitude can be set from -180.0 
+      to 180.0.  The date can be set by selecting a choice of month, setting
+      the day and year, or moving the horizontal scroll wheel just below the
+      date to scroll through the dates of the year.
+
+      <p>
+      Likewise the time can be set by setting the hour, minute and second
+      directly or moving the horizontal scroll wheel just below the time
+      to scroll through the minutes of the day.
+
+      <p>
+      The <b>Now</b> toggle, when set, will simply update the time according
+      to the current date and time as read from the computer's clock.  Dates
+      and times cannot be changed while the <b>Now</b> toggle is set.
+
+      </td>
+    </tr>
+  </table>
+
+  <p>
+  The GUI is compiled from the src/Gui directory, but leaves the executable
+  in the bin directory.
+
+
+<hr>
+<table width=100%><tr>
+    <td align=left><a href="updates_shmem.html">&lt;- Dynamic Updates using Shared Memory;</a></td>
+    <td align=right> &nbsp; </td>
+</tr></table>
+</html>

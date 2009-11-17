@@ -1,0 +1,10 @@
+From Richard Baron Penman, contributor of the VC9 build:
+
+In case anyone is interested these are the steps I took to compile on Windows:
+- header files in project file were missing .h extension
+- needed to define OSGEPHEMERIS_LIBRARY_STATIC to prevent dll linkage errors
+- removed /win32 suffix from lib directories
+- changed OpenThreadsWin32.lib -> OpenThreads.lib
+- changed osgProducer -> osgViewer
+- set environment variables $(OPENTHREADS_ROOT) and $(OSG_ROOT) and removed $(PRODUCER_ROOT)
+

@@ -1,0 +1,88 @@
+<html>
+
+<table width=100%><tr>
+    <td align=left><a href="updates_callback.html">&lt;- Dynamic Updates using a Shared Object Callback</a></td>
+    <td align=right><a href="updates_gui.html">Dynamic Updates using the GUI -&gt;</a></td>
+</tr></table>
+<hr>
+<h2>Dynamic Updates Using Shared Memory</h2>
+
+  <p>
+  In the previous two sections we described how to effect dynamic updates to
+  the <b>EphemerisModel</b> class by either programming it directly in the
+  application, or using a shared object callback.  There is yet a simpler
+  method for doing updates provided by <b>osgEphemeris</b> through a shared
+  memory interface.  
+
+  <p>
+  First a little background on shared memory.  The implementation for shared
+  memory uses the memory mapping of a file.  This allows multiple processing
+  entities to identify the same piece of shared memory by mapping the same 
+  file.  At the core of the implementation is a <b>Shmem</b> class, which uses
+  a parameter in the <b>new()</b> operator, namely the name of a file which
+  is then created, if it does not exist, and mapped into the processes memory
+  space.
+
+  <p>
+  Classes derived from <b>Shmem</b> then can use the <b>new()</b> operator to
+  allocate their memory in file mapped shared memory space.  Interestingly,
+  the values contained in the memory mapped file survive restarts of the program
+  and even reboots of the computer.
+
+  <p>
+  <b>osgEphemeris::EphemerisData</b> is derived from <b>Shmem</b>.  This all 
+  values of the <b>EphemerisData</b> class are accessible by external programs
+  for either reading or writing.  <b>osgEphemeris::EphemerisData</b> has a
+  static method <b>getDefaultShmemFileName()</b>, which returns the name
+  of a commonly accessible file on the system, which is used to map the 
+  contents of <b>EphemerisData</b>.
+
+  <p>
+  An example is provided in src/ShmemExample in the distribution, which 
+  demonstrates how to update <b>EphemerisData</b> using shared memory.
+
+  <p>
+  <table width=100%><tr><td bgcolor=#DDDDDD>
+  <blockquote>
+  <pre>
+    #include &lt;time.h&gt;
+    #include &lt;unistd.h&gt;
+    #include &lt;osgEphemeris/EphemerisData.h&gt;
+    
+    int main( int argc, char **argv )
+    {
+        time_t seconds = 0;
+    
+        // Attached to the default shared memory segment
+        osgEphemeris::EphemerisData *data = new(osgEphemeris::EphemerisData::getDefaultShmemFileName())osgEphemeris::EphemerisData;
+    
+        for( ;; )
+        {
+             seconds += 60;
+             struct tm *_tm = localtime(&amp;seconds);
+    
+             data-&gt;dateTime.setYear( _tm-&gt;tm_year + 1900 );
+             data-&gt;dateTime.setMonth( _tm-&gt;tm_mon + 1 );
+             data-&gt;dateTime.setDayOfMonth( _tm-&gt;tm_mday + 1 );
+             data-&gt;dateTime.setHour( _tm-&gt;tm_hour );
+             data-&gt;dateTime.setMinute( _tm-&gt;tm_min );
+             data-&gt;dateTime.setSecond( _tm-&gt;tm_sec );
+    
+             // Sleep 16 milliseconds
+             usleep(16667);
+        }
+    
+        return 0;
+    }
+    
+  </pre>
+  </blockquote>
+  </td></tr></table>
+
+
+<hr>
+<table width=100%><tr>
+    <td align=left><a href="updates_callback.html">&lt;- Dynamic Updates using a Shared Object Callback</a></td>
+    <td align=right><a href="updates_gui.html">Dynamic Updates using the GUI -&gt;</a></td>
+</tr></table>
+</html>

@@ -1,0 +1,200 @@
+<html>
+
+<table width=100%><tr>
+    <td align=left><a href="simple.html">&lt;- Simple Usage</a></td> 
+    <td align=right><a href="cppapi.html">C++ API -&gt;</a></td>
+</tr></table>
+<hr>
+
+<h2>.OSG File Directives</h2>
+
+  <p>
+  As discussed above, a simple file containing the entry 
+  <p>
+  <table bgcolor=#DDDDDD width=100%>
+    <tr>
+      <td>
+  <blockquote>
+        <PRE>
+    osgEphemerisModel::EphemerisModel {
+        Latitude 38.4765
+        Longitude -122.493
+        SkyDomeRadius 100000
+    }
+        </PRE>
+  </blockquote>
+      </td>
+    </tr>
+  </table>
+
+  is sufficient to have a simple ephemeris model.  A complete list of
+  directives, which can be specified between the <b>{</b> and <b>}</b>
+  brackets in the osgEphemeris::EphemerisModel definition, follows.  
+  Directives whose access value is set to <b>D</b> are dynamically 
+  changable at run-time.  Directives whose access value is set to <b>S</b>
+  are settable at initialization only.
+
+  <p>
+
+  <table  bgcolor=#FFFFFF cellspacing=0 cellpadding=10 frame=box border=1>
+    <tr bgcolor=#AABBFF valign=top>
+      <th >Directive</th>
+      <th >Description</th>
+      <th >Type</th>
+      <th >Units</th>
+      <th width=100 >Range</th>
+      <th >Default<br>Value</th>
+      <th >Access</th>
+    </tr>
+
+    <tr bgcolor=#FFFFFF valign=top>
+        <td>Latitude</td>
+        <td>The global latitude of the earthbound view position.</td>
+        <td>double</td>
+        <td>degrees</td>
+        <td>-180.0 - 180.0</td>
+        <td> 0.0 </td>
+        <td> <b>D</b> </td>
+    </tr> 
+
+    <tr bgcolor=#DDDDDD valign=top>
+        <td>Longitude</td>
+        <td>The global longitude of the earthbound view position.</td>
+        <td>double</td>
+        <td>degrees</td>
+        <td>-90.0 - 90.0</td>
+        <td> 0.0 </td>
+        <td> <b>D</b> </td>
+    </tr>
+
+    <tr bgcolor=#FFFFFF valign=top>
+        <td> DateTime </td>
+        <td>
+        The argument for the <b>DateTime</b> directive is a string of the form
+        <i>YYYYMMDDhhmmss</i> where 
+        <ul>
+            <li> <i>YYYY</i> indicates the year (e.g. 2006)
+            <li> <i>MM</i> indicates the month (e.g. 09 for September) 
+            <li> <i>DD</i> indicates the day of the month, 
+            <li> <i>hh</i> indicates the hour (range <i>00</i> to <i>23</i>)
+            <li> <i>mm</i> indicates the minutes (range <i>00</i> to <i>59</i>)
+            <li> <i>ss</i> indicates seconds (range <i>00</i> to <i>59</i>).
+        </ul>
+        <p>
+        For example, the string
+        <blockquote><code>
+        20060224162800
+        </code></blockquote>
+
+        represents the 24th of February, 2006, at 2:28 PM.  <i>hh</i>, <i>mm</i>, and
+        <i>ss</i> are optional and will be set to <i>00</i> if omitted.
+
+        </td>
+        <td>string</td>
+        <td>&nbsp; </td>
+        <td>&nbsp; </td>
+        <td>now</td>
+        <td><b>D</b></td>
+    </tr>
+
+    <tr bgcolor=#DDDDDD valign=top>
+        <td>SkyDomeRadius</td>
+        <td>
+            The SkyDome is a sphere that encompasses the scene, providing 
+            the color of the sky, horizon and a surface to which the sun
+            texture is projected.  This directive defines its size in the 
+            units of the database it will be encompassing by defining the 
+            radius of the sphere
+        </td>
+        <td>double</td>
+        <td>&lt;database&gt;</td>
+        <td>&nbsp;</td>
+        <td>&lt;distance of earth to moon&gt;</td>
+        <td> <b>S</b> </td>
+    </tr>
+
+    <tr bgcolor=#FFFFFF valign=top>
+        <td>SkyDomeCenter</td>
+        <td>
+            The SkyDome is a sphere that encompasses the scene, providing 
+            the color of the sky, horizon and a surface to which the sun
+            texture is projected. This directive provides the center of the
+            sphere in the units of the database it will be encompassing.
+            This argument is required when a database is not "zero centered"
+            (that is, centered at or near 0,0,0), even when MoveWithEyePoint
+            is set to True.  This is necessary to provide a useful database
+            size and position for osg camera manipulators at init time.
+
+        </td>
+        <td>double[3] </td>
+        <td>&lt;database&gt;</td>
+        <td>&nbsp;</td>
+        <td> 0,0,0 </td>
+        <td> <b>S</b> </td>
+    </tr>
+
+    <tr bgcolor=#DDDDDD valign=top>
+        <td>AutoDateTime</td>
+        <td>
+        Direct osgEphemeris to update the date and time to the current date
+        and time as set on the computer.  Setting this to <b>False</b> will
+        allow the application to dynamically change the date and time.  Setting
+        it to <b>True</b> will cause dynamic changes to be ignored and the 
+        current date and time will be used.
+        </td>
+        <td>boolean</td>
+        <td>True/False</td>
+        <td>&nbsp; </td>
+        <td>True</td>
+        <td> <b>D</b> </td>
+    </tr>
+
+    <tr bgcolor=#FFFFFF valign=top>
+        <td>MoveWithEyePoint</td>
+        <td>
+        Direct osgEphemeris to move the skydome and all ephemeris components to 
+        be centered at the eyepoint at all times when set to <b>True</b>.  If 
+        set to <b>False</b>, the ephemeris components will be centered around
+        0,0,0 and will not translate spatially.  This is useful for debugging
+        situations.
+        </td>
+        <td>boolean</td>
+        <td>True/False</td>
+        <td>&nbsp;</td>
+        <td> True </td>
+        <td> <b>S</b> </td>
+    </tr>
+
+    <tr bgcolor=#DDDDDD valign=top>
+        <td>UpdateCallback</td>
+        <td>
+        Provide osgEphemeris a callback compiled as a dynamically shared object,
+        specified by &lt;shared object&gt;::&lt;class name&gt;.  For example:
+        <blockquote>
+        <code> TimePasses::TimePassesCallback </code>
+        </blockquote>
+        where <i>TimePasses</i> is the dynamically shared object and <i>TimePassesCallback</i>
+        is the class name of the callback.
+        <p>
+        This callback is derived from osgEphemeris::EphemerisUpdateCallback and
+        provides a functor to which a pointer to <i>EphemerisData</i> is passed.  The 
+        callback may then modify the <i>EphemerisData</i>, updating latitude,
+        longitude, date and time.
+
+        <p>
+        See example following in section <i>Dynamic Updates Using a Shared Object Callback</i>.
+        </td>
+        <td>Callback</td>
+        <td>&nbsp; </td>
+        <td>&nbsp; </td>
+        <td>NULL</td>
+        <td> <b>S</b> </td>
+    </tr>
+  </table>
+
+<hr>
+<table width=100%><tr>
+    <td align=left><a href="simple.html">&lt;- Simple Usage</a></td> 
+    <td align=right><a href="cppapi.html">C++ API -&gt;</a></td>
+</tr></table>
+</html>

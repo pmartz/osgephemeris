@@ -1,0 +1,171 @@
+<html>
+
+<table width=100%><tr>
+    <td align=left> <a href="introduction.html">&lt;- Introduction</a></td>
+    <td align=right><a href="simple.html">Simple Usage -&gt;</a></td> 
+</tr></table>
+<hr>
+
+<h2> Downloading and Building <i>osgEphemeris</i></h2>
+
+  <p>
+  The current build is tested solely on Linux.  As most osg components, <i>osgEphemeris</i>
+  should port easily to Windows and other platforms with little effort.  Contributions are
+  welcome.
+
+  <h3>Downloading <i>osgEphemeris</i></h3>
+
+  <p>
+  Current access to <i>osgEphemeris</i> is through cvs on andesengineering.com:
+
+  <p>
+  <table bgcolor=#DDDDDD width=100%>
+    <tr>
+      <td>
+  <blockquote>
+        <br>
+        <code>
+        cvs -d :pserver:cvsguest@andesengineering.com:/cvs/osg co osgEphemeris
+        </code>
+        <br>
+  </blockquote>
+      </td>
+    </tr>
+  </table>
+
+  <p>
+  If CVS access is restricted or you prefer to download a recent tarball, you may
+  get a recent one, or generate a current one <a href="tarball/index.php">here</a>.
+
+
+
+  <h3>Building <i>osgEphemeris</i> on Linux</h3>
+
+  <h4> Prerequisite: <i>DWMake</i></h4>
+  <p>
+  A prerequisite for building <i>osgEphemeris</i> is <b>DWMake</b>.  DWMake is 
+  a simple set of GNU makefile definitions and rules for a set of common targets.
+  Instructions for getting and installing DWmake follow
+
+  <p>
+  <i>DWMake</i> is also available through CVS:
+  <p>
+  <table bgcolor=#DDDDDD width=100%>
+    <tr>
+      <td>
+  <blockquote>
+        <br>
+        <code>
+        cvs -d :pserver:cvsguest@andesengineering.com:/cvs/DWMake co DWMake
+        </code>
+        <br>
+        <br>
+  </blockquote>
+      </td>
+    </tr>
+  </table>
+
+  <p>
+  To build all projects using <i>DWMake</i> a global environmental variable 
+  <b>DWMAKE</b> needs to be defined, which points to the top level directory
+  where <i>DWMake</i> is installed.   If you've just run the <i>cvs</i>
+  command above, then the following applies:
+
+  <p>
+  <table bgcolor=#DDDDDD width=100%>
+    <tr><td bgcolor=#FFFFFF> For CSH: </td></tr>
+    <tr>
+      <td>
+  <blockquote>
+        <br>
+        <code>
+        % cd DWMake<br>
+        % setenv DWMAKE `pwd`
+        </code>
+        <br>
+        <br>
+  </blockquote>
+      </td>
+    </tr>
+    <tr><td bgcolor=#FFFFFF> For SH or BASH: </td></tr>
+    <tr>
+      <td>
+  <blockquote>
+        <br>
+        <code>
+        $ cd DWMake<br>
+        $ export DWMAKE=`pwd`
+        </code>
+        <br>
+        <br>
+  </blockquote>
+      </td>
+    </tr>
+  </table>
+
+  <p>
+  You may want to add these to your <i>.profile</i>, <i>.bashrc</i>, or <i>.cshrc</i>, whichever 
+  is appropriate.
+
+  <h4>Building <i>osgEphemeris</i></h4>
+
+  Once you have <i>DWMake</i> installed and the <b>DWMAKE</b> environmental 
+  variable defined, it is just a matter of typing make in the osgEphemeris
+  directory:
+
+  <p>
+  <table bgcolor=#DDDDDD width=100%>
+    <tr>
+      <td>
+  <blockquote>
+        <br>
+        <code>
+        % cd osgEphemeris<br>
+        % make
+        </code>
+        <br>
+        <br>
+  </blockquote>
+      </td>
+    </tr>
+  </table>
+
+
+  <h4> Installing <i>osgEphemeris</i></h4>
+
+  <p>
+  By default <i>osgEphemeris</i> installes in /usr/local.  You may install in other 
+  locations by using the directive <b>INST_LOCATION</b>:
+
+  <p>
+  <table bgcolor=#DDDDDD width=100%>
+    <tr>
+      <td>
+  <blockquote>
+        <br>
+        <code>
+        % make install <br>
+        </code>
+        <b>OR</b><br>
+        <code>
+        % make INST_LOCATION=/usr install
+        </code>
+        <br>
+        <br>
+  </blockquote>
+      </td>
+    </tr>
+  </table>
+
+  <p>
+  The above command will install the include/osgEphemeris directory in 
+  <b>INST_LOCATION</b>/include, the library <i>libosgEphemeris.so</i> in
+  <b>INST_LOCATION</b>/lib and the plugin <i>osgdb_osgEphemerisModel.so</i> in
+  <b>INST_LOCATION</b>/lib/osgPlugins.  
+
+<hr>
+<table width=100%><tr>
+    <td align=left> <a href="introduction.html">&lt;- Introduction</a></td>
+    <td align=right><a href="simple.html">Simple Usage -&gt;</a></td> -->
+</tr></table>
+</html>

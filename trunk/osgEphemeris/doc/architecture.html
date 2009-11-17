@@ -1,0 +1,200 @@
+<html>
+
+<h2>OSG Ephemeris - Architecture And Implementation </h2>
+
+ <p>
+ This page is intended to be a discussion on the architecture of the osgEphemeris
+ model.  Its purpose is for the understanding of the internals of osgEphemeris for
+ developers who would like to improve or contribute to it. 
+
+ <p>
+ The osgEphemeris model is made up of the following components:
+
+ <ul>
+    <li>The Sky</li>
+    <li>The Sun</li>
+    <li>The Moon</li>
+    <li>The Stars</li>
+    <li>The Planets</li>
+</ul>
+
+<h3>The Sky</h3>
+
+  <p>
+  Strictly speaking, the Sky is not part of the ephemeris.  However, it is an 
+  important component to making visual scenes look realistic, and it provides
+  the foundation on which the rest of the osgEphemeris model is based.
+
+  <img src=sky.jpg align=left hspace=30 vspace=30>
+  <p>
+  The <b>SkyDome</u></b> is a sphere that is made of trianges which 
+  are oriented inward.  That is, it is intended to be seen from inside.  When
+  back-face polygon culling is enabled, only the inner side of the sphere is 
+  visible.  The <b>SkyDome</b> is made with a radius of the distance of the
+  earth to the moon in meters - a decision which might become clearer when 
+  considering the other aspects of osgEpheremis.
+
+  <p>
+  Purposely, the <b>SkyDome</b> is made of a Norhern and Southern hemisphere.
+  Now, a ground-bound ephemeris view would seem not to need a Southern hemisphere
+  for a sky dome.  But, the intention was that the Southern hemisphere could be
+  used for doing reflections in water, such that the sky could be rendered "upside
+  down" in the Southern hemisphere, and water could simply be a transparent 
+  surface that sees the "upside down" sky.  This was implemented successfully
+  for the Sun, but not for the Moon and Stars.  Reasons to be discussed later.
+
+  <p>
+  The <b>SkyDome</b> uses a 1D texture to control the sky color, which is updated
+  every frame.  It is only made of 256 texels so the compute and I/O time is 
+  reasonable.  Since the sky is a dome, each texel of the 1D texture represents
+  an incidence angle with respect to the horizon.  The color of each texel is 
+  computed by determining the <i>incidence length</i> at each given angle, given 
+  a depth of atmosphere.  A little "fudge" is included to account for light 
+  properties which bend around corners (dusk hours have light when the sun
+  has already set, for example).
+
+  <p>
+  The 1D texture is of format RGBA, which allows an alpha component and 
+  therefore transparency.  In fact, the sky becomes transparent at night
+  and retains 50% transparency in the day.  
+
+  <p>
+  By default, the SkyDome uses texture unit <b>1</b> for the 1D sky color
+  texture, and texture unit <b>2</b> for the Sun (below).
+
+<h3>The Sun</h3>
+
+  <p>
+  In osgEphemeris, the Sun is simple a projected texture on the SkyDome.  
+  A rotation matrix is controlled using the Sun's azimuth and altitude 
+  in the sky to determine the corresponding rotation matrix for the projection
+  planes.  
+
+  <img src=sun.jpg align=left hspace=30 vspace=30>
+  <p>
+  The Sun is also projected on the Southern hemisphere of the SkyDome with
+  the opposite rotation as the projection planes of the Northern hemisphere
+  to give that "reflection" effect of an upside down sky.  This part worked
+  successfully.
+
+  <p>
+  The piece that is lacking with the Sun is a halo and controlling the 
+  color of the halo.  Upon reflection of many sunset pictures, it was 
+  determined that the sun's core color did not change much regardless of 
+  its horizon incidence.  However, the halo that surrounds the sun goes
+  from white/nearly transparent in the noon day position to yellow/red
+  and quite opaque near the horizon.  This certainly must have to do
+  with the amount of atmosphere the Sun light is penetrating.
+
+  <p>
+  The current implementation does not include a Sun halo.  Some 
+  experimentation was done with core sun color, but when a large enough
+  texture is used to reduce pixelation anomalies, the compute and I/O 
+  time is prohibitive for updating the color of the texture.
+
+  <p>
+  A suggested implementation for this would be to use a shader to 
+  draw a sun in an Frame Buffer Object or Pixel Buffer and use that
+  image as the texture for the Sun and its halo.  This would allow 
+  full leverage of pipeline rendering to be able to get accurate 
+  dynamic color changes  with respect to the Sun's incidence to the
+  horizon.
+
+  <p>
+  Note that the sun texture as most textures are built in the build
+  system as internal arrays of unsigned bytes.  This is to eliminate
+  the dependency on external textures for the osgEphemeris distribution.
+  An exception to this is the Planets discussed following.
+
+<h3>The Moon </h3>
+
+  <p>
+  As indicated in the last paragraph, the moon images are built from 
+  source imagery in the build system and stored in c++ files as arrays
+  of unsigned bytes, which are then compiled into the osgEphemeris library
+  to reduce external dependencies.  The source data for the moon images
+  include both a surface image and a normal map image.
+
+  <img src=moon.jpg align=left hspace=30 vspace=30>
+  <p>
+  THis means that, yes, the moon itself is implemented as a sphere in the
+  sky, textured with the surface texture of the moon and bumpmapped with 
+  the normal map.  When running the Ephemeris with MoveWithEyePoint set 
+  to False, you can zoom in very close to the moon and see the effects 
+  of the bump map.
+
+  <p>
+  The moon is placed in the sky, just beyond the radius of the SkyDome 
+  (5 moon radiuses beyond, actually).  The reason for this that it was
+  necessary to be able to view the moon during the day and the portions
+  of the moon, which are not visible (say when the moon is quartered),
+  are blue - that is, the color of the sky.  The best way, it seemed,
+  to accomplish this was to render the sky 50% transparent and show 
+  the moon in its correct phase through the "atmosphere".
+
+  <p>
+  The piece that is yet unsure about the moon is whether the correct
+  side is facing the viewpoint.  The moon is geometry, which is controlled
+  by a MatrixTransform, so fixing this would be a very simple matter 
+  of adding the right rotation in to the MatrixTransform.  This still
+  needs to be investigated a bit.
+
+<h3>The Stars</h3>
+
+  <p>
+  The stars are implemented with a StarField, which is really not,
+  strictly speaking, as StarField.  It is, in fact, a simple set of
+  points arranged in a sphere, which is slightly larger than the 
+  SkyDome sphere.  From the earth-bound vantage, all points in this
+  sphere are placed correctly to represent the constellations.
+
+  <img src=stars.jpg align=right hspace=30 vspace=30>
+  <p>
+  The stars are implemented with an GLSL shader for a couple of 
+  reasons. 1) Better control over brightness (magnitude) and 2)
+  transparency control.  That latter was necessary to make the
+  stars "dissapear" during the day time.  Remember that the SkyDome needed
+  to retain 50% transparency to be able to adequately render the Moon, so
+  the stars would also be seen through the SkyDome unless we make them fully 
+  transparent.  Doing this on a point by point basis had a significant
+  impact on I/O bandwidth, but was trivial to do in a shader.
+
+  <p>
+  Alternatives would have been to use a global material with transparency
+  but that would have meant dealing with lighting issues as well and would
+  have had an impact on star brightness.  
+
+
+  <p>
+  It is really important to control the brightness of the stars to give the
+  night sky a realistic appeance.  A simple set of points with all the same
+  brightness looks like a set of points with all the same brightness, not like
+  stars.
+
+  <p>
+  Note in the code, that the uniform pointSize is set to 2.4.  This allowed for
+  a reasonable representation of the stars even with antialiasing enabled.  There
+  still remains a bit of blinking as one moves the view around, but, then, 
+  "blinking" is one of the things the atmosphere does to stars anyway.
+
+<h3>The Planets</h3>
+
+  <p>
+  The planets are the least studied component of the osgEphemeris.  The reason is 
+  that, when drawn to scale, they simply where not visible.  The exception to this
+  would be Venus or Mars on a good night, but although they are implemented as 
+  geometrical spheres, they don't take any more screen space than the points of 
+  light making up the stars.  
+
+  <p>
+  Unless one is looking to implement a virtual telescope using osgEphemeris, this
+  seemed like a component not worth putting much effort into.  So, the planets
+  are left off as a default member of the osgEphemeris components.
+
+  <p>
+  Planet textures use the images that come in the current osgData distribution.
+  osgEphemeris has these as the only external data dependencies.
+
+
+
+</html>
