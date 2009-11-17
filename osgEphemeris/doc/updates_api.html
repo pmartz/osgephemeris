@@ -1,0 +1,152 @@
+<html>
+
+<table width=100%><tr>
+    <td align=left> <a href="cppapi.html">&lt;- C++ API</a></td>
+    <td align=right><a href="updates_callback.html">Dynamic Updates using a Shared Object Callback -&gt;</a></td>
+</tr></table>
+<hr>
+
+<h2>Dynamic Updates Using the API</h2>
+
+  <p>
+  In the previous section we discussed setting static values for defining the 
+  <b>EphemersModel</b> class behavior.  An Ephemeris Model is not of much use
+  unless it can update dynamically.  We can effect updates through the API (discussed
+  in this section), a shared object callback (discussed in the next section ), 
+  or through shared memory (discussed in the second section following).  
+
+  <p>
+  In the C++ API, there are three methods for effecting updates, <b>Automatic</b>,
+  <b>Directly</b>, or through a <b>Callback</b>.
+
+  <h3>Automatic Updates</h3>
+
+  <p>
+  Automatic updates is the default.  In fact, no further action is required after
+  initialization of the <b>EphemerisModel</b> class to put automatic updates
+  into effect.  The <b>EphemersModel</b> class will update its own data upon 
+  scene graph traversal and set heavenly body positions according to the current
+  time as read from the computer's clock.
+
+  <h3>Direct Updates</h3>
+
+  <p>
+  The <b>EphemersModel</b> class has a pointer to a <b>EphemerisData</b> struct.
+  This struct contains the latitude, longitude and altitude of the current eye 
+  position as well as the date and time in an internal <b>DateTime</b> struct.  
+  Direct updates are put into effect by updating these values in the main 
+  loop of the program.  Let's say we write a function for updating the
+  date and time from the computer's clock (redundant to simply using AutoDateTime,
+  but provided here as an example.
+  <p>
+  <table width=100%><tr><td bgcolor=#DDDDDD>
+    <blockquote>
+    <PRE>
+
+    static void SetCurrentTime( osgEphemeris::EphemerisModel &amp;ephem )
+    {
+        time_t seconds = time(0L);
+        struct tm *_tm = localtime(&amp;seconds);
+
+        osgEphemeris::EphemerisData *data = ephem.getEphemerisData();
+
+        data-&gt;dateTime.setYear( _tm-&gt;tm_year + 1900 ); // DateTime uses _actual_ year (not since 1900)
+        data-&gt;dateTime.setMonth( _tm-&gt;tm_mon + 1 );    // DateTime numbers months from 1 to 12, not 0 to 11
+        data-&gt;dateTime.setDayOfMonth( _tm-&gt;tm_mday + 1 ); // DateTime numbers days from 1 to 31, not 0 to 30
+        data-&gt;dateTime.setHour( _tm-&gt;tm_hour );
+        data-&gt;dateTime.setMinute( _tm-&gt;tm_min );
+        data-&gt;dateTime.setSecond( _tm-&gt;tm_sec );
+    }
+    </PRE>
+    </blockquote>
+    </td></tr></table>
+
+    <p>
+    And now we simply place a call to this function in the main loop, just after
+    <code>viewer.sync()</code>.
+
+  <p>
+  <table width=100%><tr><td bgcolor=#DDDDDD>
+  <blockquote>
+    <pre>
+
+    while( !viewer.done() )
+    {
+        viewer.sync();
+        viewer.update();
+        viewer.frame();
+    }
+    </pre>
+    </blockquote>
+    </td></tr></table>
+
+  <h3>Updates with a Callback</h3>
+
+  <p>
+  In some cases and by some preferences, we may not have access to the main 
+  loop, or we may prefer simply not to clutter up the main loop with extraneous
+  calls for updates.  In this case we can use an <b>EphemerisUpdateCallback</b>.
+  This callback is a C++ class, derived from <b>osgEphemeris::EphemerisUpdateCallback</b>.
+
+  <p>
+  The above example, which updates the <b>EphemersData</b> to the current time, can
+  be implemented with the following class.
+
+  <p>
+  <table width=100%><tr><td bgcolor=#DDDDDD>
+  <blockquote>
+    <pre>
+
+    class EphemerisDataUpdateCallback : public osgEphemeris::EphemerisUpdateCallback
+    {
+        public:
+            EphemerisDataUpdateCallback(): EphemerisUpdateCallback( "EphemerisDataUpdateCallback" )
+            {}
+    
+            void operator()( osgEphemeris::EphemerisData *data )
+            {
+                time_t seconds = time(0L);
+                struct tm *_tm = localtime(&amp;seconds);
+    
+                 data-&gt;dateTime.setYear( _tm-&gt;tm_year + 1900 ); // DateTime uses _actual_ year (not since 1900)
+                 data-&gt;dateTime.setMonth( _tm-&gt;tm_mon + 1 ); // DateTime numbers months from 1 to 12, not 0 to 11
+                 data-&gt;dateTime.setDayOfMonth( _tm-&gt;tm_mday + 1 ); // DateTime numbers days from 1 to 31, not 0 to 30
+                 data-&gt;dateTime.setHour( _tm-&gt;tm_hour );
+                 data-&gt;dateTime.setMinute( _tm-&gt;tm_min );
+                 data-&gt;dateTime.setSecond( _tm-&gt;tm_sec );
+            }
+    };
+    </pre>
+    </blockquote>
+    </td></tr></table>
+
+    <p>
+    Note that the constructor passes a string to the super class.  This has 
+    little meaning in this context, but will be better understood upon reading
+    the next section.
+
+    <p>
+    We now tell the <b>EphemersModel</b> class about the callback:
+
+  <p>
+  <table width=100%><tr><td bgcolor=#DDDDDD>
+  <blockquote>
+    <pre>
+
+    ephemerisModel-&gt;setEphemerisUpdateCallback( new EphemerisDataUpdateCallback );
+    </pre>
+    </blockquote>
+    </td></tr></table>
+
+  <p>
+  Note again, that these examples simply make redundant what the AutoDateTime 
+  function does, but you may want to do something different and interesting in
+  your callback.  Note that you can also change <b>Latitude</b>, <b>Longitude</b>,
+  and <b>Altitude</b> in the <b>EphemerisData</b> struct.
+
+<hr>
+<table width=100%><tr>
+    <td align=left> <a href="cppapi.html">&lt;- C++ API</a></td>
+    <td align=right><a href="updates_callback.html">Dynamic Updates using a Shared Object Callback -&gt;</a></td>
+</tr></table>
+</html>

@@ -1,0 +1,23 @@
+INST_LOCATION=/usr/local/
+
+install:
+	install lib/$(OSARCH)/libosgEphemeris.so $(INST_LOCATION)/lib$(ARCH_EXT)/
+	install -d $(INST_LOCATION)/lib$(ARCH_EXT)/osgPlugins/
+	install -D lib/$(OSARCH)/osgdb_osgEphemerisModel.so $(INST_LOCATION)/lib$(ARCH_EXT)/osgPlugins/osgdb_osgEphemerisModel.so
+	install -d $(INST_LOCATION)/include/osgEphemeris/
+	@for f in `ls include/osgEphemeris | grep -v CVS`; \
+    do \
+        echo install  include/osgEphemeris/$$f $(INST_LOCATION)/include/osgEphemeris/$$f;\
+        install  include/osgEphemeris/$$f $(INST_LOCATION)/include/osgEphemeris/$$f;\
+    done
+
+instlinks:
+	ln -s `pwd`/lib/$(OSARCH)/libosgEphemeris.so $(INST_LOCATION)/lib$(ARCH_EXT)/
+	ln -s `pwd`/lib/$(OSARCH)/osgdb_osgEphemerisModel.so $(INST_LOCATION)/lib$(ARCH_EXT)/osgPlugins/
+	ln -s `pwd`/include/osgEphemeris $(INST_LOCATION)/include/osgEphemeris
+
+uninstall:
+	rm -f $(INST_LOCATION)/lib$(ARCH_EXT)/libosgEphemeris.so 
+	rm -f $(INST_LOCATION)/lib$(ARCH_EXT)/osgPlugins/osgdb_osgEphemerisModel.so
+	rm -rf $(INST_LOCATION)/include/osgEphemeris
+

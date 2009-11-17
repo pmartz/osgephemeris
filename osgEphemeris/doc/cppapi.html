@@ -1,0 +1,197 @@
+<html>
+
+<table width=100%><tr>
+    <td align=left> <a href="osgdirectives.html">&lt;- .OSG File Directives</a></td>
+    <td align=right><a href="updates_api.html">Dynamic Updates using the API -&gt;</a></td>
+</tr></table>
+<hr>
+<h2> osgEphemeris C++ API </h2>
+
+  <p>
+  An example of building a viewer which include the <i>osgEphemeris::EphemerisModel</i>
+  class is provided in the distribution under <i>src/Viewer</i>.  In essence, the
+  <i>osgEphermeris::EphemerisModel</i> is added to the scene graph like any other 
+  <i>osg::Node</i>.  <i>osgEphemeris::EphemerisModel</i> is the highest level 
+  class in the osgEphemeris library and provides the highest level interface 
+  for the programmer
+  
+  <p>
+  The following is main.cpp from the viewer example.
+
+  <p>
+  <table width=100% bgcolor=#DDDDDD>
+  <tr><td>
+  <blockquote>
+  <pre>
+
+/*
+ -------------------------------------------------------------------------------
+ | osgEphemeris - Copyright (C) 2007  Don Burns                                |
+ |                                                                             |
+ | This library is free software; you can redistribute it and/or modify        |
+ | it under the terms of the GNU Lesser General Public License as published    |
+ | by the Free Software Foundation; either version 3 of the License, or        |
+ | (at your option) any later version.                                         |
+ |                                                                             |
+ | This library is distributed in the hope that it will be useful, but         |
+ | WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY  |
+ | or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public     |
+ | License for more details.                                                   |
+ |                                                                             |
+ | You should have received a copy of the GNU Lesser General Public License    |
+ | along with this software; if not, write to the Free Software Foundation,    |
+ | Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.               |
+ |                                                                             |
+ -------------------------------------------------------------------------------
+ */
+
+#include &lt;osgDB/ReadFile&gt;
+#include &lt;osgUtil/Optimizer&gt;
+#include &lt;osgProducer/Viewer&gt;
+
+#include &lt;osgEphemeris/EphemerisModel.h&gt;
+
+int main(int argc, char **argv)
+{
+    // Parse command line arguments 
+    osg::ArgumentParser args( &argc, argv );
+
+    // Set up the viewer
+    osgProducer::Viewer viewer(args);
+    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
+
+    // Tell the viewer what to display for a help message
+    viewer.getUsage(*args.getApplicationUsage());
+
+    // Load up the models specified on the command line
+    osg::ref_ptr&lt;osg::Group&gt; root = new osg::Group;
+    osg::ref_ptr&lt;osg::Node&gt; model = osgDB::readNodeFiles(args);
+    if( model.valid() )
+        root-&gt;addChild( model.get() );
+
+    // Define the Ephemeris Model and its radius
+    osg::BoundingSphere bs = model-&gt;getBound();
+    osg::ref_ptr&lt;osgEphemeris::EphemerisModel&gt; ephemerisModel = new osgEphemeris::EphemerisModel;
+    ephemerisModel-&gt;setSkyDomeRadius( bs.radius()*2 );
+    ephemerisModel-&gt;setSkyDomeCenter( bs.center() );
+
+    // Optionally, Set the AutoDate and Time to false so we can control it with the GUI
+    //ephemerisModel-&gt;setAutoDateTime( false );
+
+    // Optionally, uncomment this if you want to move the Skydome, Moon, Planets and StarField with the mouse
+    //ephemerisModel-&gt;setMoveWithEyePoint(false);
+
+    root-&gt;addChild( ephemerisModel.get() );
+
+    osgUtil::Optimizer optimizer;
+    optimizer.optimize(root.get());
+
+    // set the scene to render
+    viewer.setSceneData(root.get());
+
+    // Realize the viewer
+    viewer.realize();
+    while( !viewer.done() )
+    {
+        viewer.sync();
+        viewer.update();
+        viewer.frame();
+    }
+    viewer.sync();
+    return 0;
+}
+  </pre>
+  </blockquote>
+  
+  </td></tr> 
+  </table>
+
+  <p>
+  The following lines set up and add the <i>osgEphemeris::EphemerisModel</i> 
+  class:
+
+  <table width=100%><tr><td bgcolor=#DDDDDD>
+  <blockquote>
+  <pre>
+    // Define the Ephemeris Model and its radius
+    osg::BoundingSphere bs = model-&gt;getBound();
+    osg::ref_ptr&lt;osgEphemeris::EphemerisModel&gt; ephemerisModel = new osgEphemeris::EphemerisModel;
+    ephemerisModel-&gt;setSkyDomeRadius( bs.radius()*2 );
+    ephemerisModel-&gt;setSkyDomeCenter( bs.center() );
+
+    root-&gt;addChild( ephemerisModel.get() );
+
+  </pre>
+  </blockquote>
+  </td></tr></table>
+
+  <p>
+  <code>setSkyDomeRadius( bs.radius()*2) </code> and <code> setSkyDomeCenter(bs.center())
+  </code>is the only real essential call required for practical use of <i>osgEphemeris</i>.  
+  All other defaults should result in desired default behavior.  Note that we use the 
+  bounding sphere of the model loaded on the command line as the parameter for defining
+  the radius of the SkyDome.
+
+  <p>
+  Other parameters that can be set at initialization time are <i>AutoDateTime</i>,
+  <i>MoveWithEyepoint</i>, and setting an <i>UpdateCallback</i>.   
+
+  <i>AutoDateTime</i> gets a boolean value and is set with the api thusly,
+  <p>
+  <table width=100%><tr><td bgcolor=#DDDDDD>
+  <blockquote>
+    <br>
+    <code>
+    ephemerisMode-&gt;setAutoDateTime( false );
+    </code>
+    <br><br>
+    </blockquote>
+    </td></tr></table>
+
+  <p>
+  <i>AutoDateTime</i> tells the Ephemeris Model to update the date and time 
+  automatically by reading the computer's clock.  Thus, the position of the 
+  heavenly bodies will reflect the current time as set on the computer.
+  This value is set to <i>true</i> by default.  Set this to <i>false</i> 
+  if you intend to change the date and time dynamically or by some method 
+  other than the current time of the computer's clock.
+
+  <p>
+  <i>MoveWithEyePoint</i> gets a boolean value and is set with the API thusly,
+  <p>
+  <table width=100%><tr><td bgcolor=#DDDDDD>
+  <blockquote>
+    <br>
+    <code>
+    ephemerisMode-&gt;setMoveWithEyePoint( true );
+    </code>
+    <br><br>
+    </blockquote>
+    </td></tr></table>
+
+  <p>
+  <i>MoveWithEyePoint</i> tells the Ephemeris Model to keep the skydome and 
+  position of the view of the heavenly bodies always centered at the eyepoint.
+  This value is set to <i>true</i> by default.   Set this to <i>false</i> if 
+  you intend to be able to manipulate the camera to points outside the 
+  ephemeris SkyDome.  This is useful for debugging or simply getting a sense
+  of the osgEphemeris implementation.
+
+  <p>
+  The parameters discussed in this section are settable only at initialization 
+  time and remain static for the life of the EphemerisModel class instance.  
+  Dynamic changes are discussed in the following sections.  Dynamic changes 
+  can be set by using a callback method.  This <i>UpdateCallack</i> is set
+  statically as well, and is discussed in the next section.
+  
+
+
+
+
+
+<hr>
+<table width=100%><tr>
+    <td align=left> <a href="osgdirectives.html">&lt;- .OSG File Directives</a></td>
+    <td align=right><a href="updates_api.html">Dynamic Updates using the API -&gt;</a></td>
+</tr></table>
+</html>

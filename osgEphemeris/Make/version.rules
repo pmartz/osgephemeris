@@ -1,0 +1,19 @@
+VERSION_MAJOR    = 1
+VERSION_MINOR    = 0
+VERSION_RELEASE  = 0
+VERSION_REVISION ?= 1
+VERSION       = $(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_RELEASE)
+
+version :
+	@if [ $(VERSION_REVISION) -eq 0 ];  then \
+        release=`date +%Y%m%d%H%M`; \
+    else \
+        release=$(VERSION_REVISION); \
+    fi; \
+    echo $(VERSION)-$$release;\
+
+
+
+tag:
+	cvs tag osgEphemeris_$(VERSION_MAJOR)_$(VERSION_MINOR)_$(VERSION_RELEASE)_$(VERSION_REVISION)
+

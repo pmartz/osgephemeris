@@ -1,0 +1,463 @@
+<html>
+<head>
+  <title> OSG Ephemeris</title>
+</head>
+
+<body bgcolor=white>
+
+<h1 align=center> OpenSceneGraph Ephemeris Model </h1>
+
+<center> <img src=sunset.jpg></center>
+
+<h2 align=center><i>osgEphemeris Documentation</i></h2>
+
+<hr>
+<h3> Table of Contents </h3>
+<ul>
+    <li> <a href=#introduction>Introduction</a>
+    <li> <a href=#simple_usage>Simple Usage</a>
+    <li> <a href=#downloading_building>Downloading and Building <i>osgEphemeris</i></a>
+</ul>
+<hr>
+
+<a id=introduction />
+<h2>Introduction</h2>
+
+From dictionary.com:
+<blockquote>
+<TABLE bgcolor=#DDDDDD width=100%>
+    <TR>
+        <TD>
+            <b>e&#183;phem&#183;er&#183;is</b> &nbsp;&nbsp;
+            <span style="display: none;">(</span><span style="font-family: verdana, sans-serif; font-size: 7pt; color: red; background-color: #ffffcc; border-style: solid; border-width: 1px;">&nbsp;P&nbsp;</span><span style="display: none;">)</span>&nbsp;&nbsp;
+            <!--
+            <a title="Click for guide to symbols." onclick="ahdpop();return false;" href="/help/ahd4/pronkey.html" class="linksrc"><b>Pronunciation Key</b></a>
+            -->
+            &nbsp;&nbsp;(<IMG ALT="" SRC="http://cache.lexico.com/dictionary/graphics/AHD4/GIF/ibreve.gif" height="15" width="7" ALIGN="BOTTOM">-f<IMG
+        ALT="" SRC="http://cache.lexico.com/dictionary/graphics/AHD4/GIF/ebreve.gif" height="15" width="7" ALIGN="BOTTOM">m<IMG ALT="" SRC="http://cache.lexico.com/dictionary/graphics/AHD4/GIF/prime.gif" height="22" width="4" ALIGN="BOTTOM"><IMG ALT="" SRC="http://cache.lexico.com/dictionary/graphics/AHD4/GIF/schwa.gif" height="15" width="6" ALIGN="BOTTOM">r-<IMG ALT="" SRC="http://cache.lexico.com/dictionary/graphics/AHD4/GIF/ibreve.gif" height="15" width="7" ALIGN="BOTTOM">s)<BR>
+
+ <I>n.</I> <I>pl.</I> <B>eph&#183;e&#183;mer&#183;i&#183;des </B>(<IMG ALT="" SRC="http://cache.lexico.com/dictionary/graphics/AHD4/GIF/ebreve.gif" height="15" width="7" ALIGN="BOTTOM">f<IMG ALT="" SRC="http://cache.lexico.com/dictionary/graphics/AHD4/GIF/lprime.gif" height="22" width="3" ALIGN="BOTTOM"><IMG ALT="" SRC="http://cache.lexico.com/dictionary/graphics/AHD4/GIF/schwa.gif" height="15" width="6"
+         ALIGN="BOTTOM">-m<IMG ALT="" SRC="http://cache.lexico.com/dictionary/graphics/AHD4/GIF/ebreve.gif" height="15" width="7" ALIGN="BOTTOM">r<IMG ALT="" SRC="http://cache.lexico.com/dictionary/graphics/AHD4/GIF/prime.gif" height="22" width="4" ALIGN="BOTTOM"><IMG ALT="" SRC="http://cache.lexico.com/dictionary/graphics/AHD4/GIF/schwa.gif" height="15" width="6" ALIGN="BOTTOM">-d<IMG ALT="" SRC="http://cache.lexico.com/dictionary/graphics/AHD4/GIF/emacr.gif" height="15" width="7" ALIGN="BOTTOM">z<IMG
+         ALT="" SRC="http://cache.lexico.com/dictionary/graphics/AHD4/GIF/lprime.gif" height="22" width="3" ALIGN="BOTTOM">) <DL><DD>A table giving the coordinates of a celestial body at a number of specific times during a given period.</DD></DL><BR>
+
+ <HR ALIGN="left" WIDTH="25%">[Late Latin<TT> eph<IMG ALT="" SRC="http://cache.lexico.com/dictionary/graphics/AHD4/GIF/emacr.gif" height="15" width="7" ALIGN="BOTTOM">meris</TT>, from Greek, <I>diary</I>, from<TT> eph<IMG ALT="" SRC="http://cache.lexico.com/dictionary/graphics/AHD4/GIF/emacr.gif" height="15" width="7" ALIGN="BOTTOM">meros</TT>,
+ <I>daily</I>. See <B>ephemeral</B>.]</TD>
+ </TR></TABLE>
+</blockquote>
+
+  <p>
+  <i>osgEphemeris</i> provides the virtual environment for the sky, sun, moon, 
+  planets and stars to be used with visualization applications using 
+  <a href=http://www.openscenegraph.org> OpenSceneGraph</a>.  When using 
+  <i>osgEphemeris</i>, the user provides the software with <b>Latitude</b>, 
+  <b>Longitude</b>, <b>Date</b> and <b>Time</b>, and the software will provide
+  a ground (or near-ground) view of the sky with the sun, moon, planets, and
+  stars all positioned with reasonable accuracy.  
+
+  <p>
+  Note that <i>osgEphemeris</i> is intended for ground based visualization and
+  does not extend to space flight or accurate representation of heavenly body 
+  positioning other than for a view that is on or near the ground.  <i>Near</i>
+  means within 40,000 feet of the ground, or so.  Altitudes are taken into 
+  consideration and distance above horizon for heavenly bodies, but loose accuracy
+  the higher the vantage point.
+
+  <p>
+  The software is provided for use in two methods: as a C++ API, or as a .osg
+  file format, using OpenSceneGraph <i>Node Kit</i> methodology.  This document
+  will demonstrate how to use the osgEphemeris software, how to integrate it
+  into your application and how to control its parameters.
+
+  <p>
+  Familiarity with OpenSceneGraph C++ API and OpenSceneGraph utility programs,
+  such as <b>osgviewer</b> are assumed.
+
+<a id=downloading_building />
+<h2> Downloading and Building <i>osgEphemeris</i></h2>
+
+  <p>
+  The current build is tested solely on Linux.  As most osg components, <i>osgEphemeris</i>
+  should port easily to Windows and other platforms with little effort.  Contributions are
+  welcome.
+
+  <h3>Downloading <i>osgEphemeris</i></h3>
+
+  <p>
+  Current access to <i>osgEphemeris</i> is through cvs on openscenegraph.org:
+
+  <p>
+  <table bgcolor=#DDDDDD width=100%>
+    <tr>
+      <td>
+  <blockquote>
+        <br>
+        <code>
+        cvs -d :pserver:cvsguest@openscenegraph.org:/cvs/osg co osgEphemeris
+        </code>
+        <br>
+        <br>
+  </blockquote>
+      </td>
+    </tr>
+  </table>
+
+
+  <h3>Building <i>osgEphemeris</i> on Linux</h3>
+
+  <h4> Prerequisite: <i>DWMake</i></h4>
+  <p>
+  A prerequisite for building <i>osgEphemeris</i> is <b>DWMake</b>.  DWMake is 
+  a simple set of GNU makefile definitions and rules for a set of common targets.
+  Instructions for getting and installing DWmake follow
+
+  <p>
+  <i>DWMake</i> is also available through CVS:
+  <p>
+  <table bgcolor=#DDDDDD width=100%>
+    <tr>
+      <td>
+  <blockquote>
+        <br>
+        <code>
+        cvs -d :pserver:cvsguest@openscenegraph.org:/cvs/DWMake co DWMake
+        </code>
+        <br>
+        <br>
+  </blockquote>
+      </td>
+    </tr>
+  </table>
+
+  <p>
+  To build all projects using <i>DWMake</i> a global environmental variable 
+  <b>DWMAKE</b> needs to be defined, which points to the top level directory
+  where <i>DWMake</i> is installed.   If you've just run the <i>cvs</i>
+  command above, then the following applies:
+
+  <p>
+  <table bgcolor=#DDDDDD width=100%>
+    <tr><td bgcolor=#FFFFFF> For CSH: </td></tr>
+    <tr>
+      <td>
+  <blockquote>
+        <br>
+        <code>
+        % cd DWMake<br>
+        % setenv DWMAKE `pwd`
+        </code>
+        <br>
+        <br>
+  </blockquote>
+      </td>
+    </tr>
+    <tr><td bgcolor=#FFFFFF> For SH or BASH: </td></tr>
+    <tr>
+      <td>
+  <blockquote>
+        <br>
+        <code>
+        $ cd DWMake<br>
+        $ export DWMAKE=`pwd`
+        </code>
+        <br>
+        <br>
+  </blockquote>
+      </td>
+    </tr>
+  </table>
+
+  <p>
+  You may want to add these to your <i>.profile</i>, <i>.bashrc</i>, or <i>.cshrc</i>, whichever 
+  is appropriate.
+
+  <h4>Building <i>osgEphemeris</i></h4>
+
+  Once you have <i>DWMake</i> installed and the <b>DWMAKE</b> environmental 
+  variable defined, it is just a matter of typing make in the osgEphemeris
+  directory:
+
+  <p>
+  <table bgcolor=#DDDDDD width=100%>
+    <tr>
+      <td>
+  <blockquote>
+        <br>
+        <code>
+        % cd osgEphemeris<br>
+        % make
+        </code>
+        <br>
+        <br>
+  </blockquote>
+      </td>
+    </tr>
+  </table>
+
+
+  <h4> Installing <i>osgEphemeris</i></h4>
+
+  <p>
+  By default <i>osgEphemeris</i> installes in /usr/local.  You may install in other 
+  locations by using the directive <b>INST_LOCATION</b>:
+
+  <p>
+  <table bgcolor=#DDDDDD width=100%>
+    <tr>
+      <td>
+  <blockquote>
+        <br>
+        <code>
+        % make install <br>
+        </code>
+        <b>OR</b><br>
+        <code>
+        % make INST_LOCATION=/usr install
+        </code>
+        <br>
+        <br>
+  </blockquote>
+      </td>
+    </tr>
+  </table>
+
+
+<a id=simple_usage />
+<h2> Simple usage</h2>
+
+  <p>
+  The simples way to start using osgEphemeris is to save the following into a file
+  named <i>ephemeris.osg</i> and use it on the command line with osgviewer.  (We'll assume
+  that you will use this file with a piece of terrain, named <i>terrain.osg</i>, 
+  which can be confined within a skydome of radius 100000):
+
+  <p>
+  <table bgcolor=#DDDDDD width=100%>
+    <tr>
+      <td>
+  <blockquote>
+        <PRE>
+    osgEphemerisModel::EphemerisModel {
+        Latitude 38.4765
+        Longitude -122.493
+        SkyDomeRadius 100000
+    }
+        </PRE>
+  </blockquote>
+      </td>
+    </tr>
+  </table>
+
+  <p>
+  Like this:
+
+  <table bgcolor=#DDDDDD width=100%>
+    <tr>
+      <td>
+  <blockquote>
+        <PRE>
+        osgviewer --clear-color 0,0,0,1 ephemeris.osg terrain.osg
+        </PRE>
+  </blockquote>
+      </td>
+    </tr>
+  </table>
+
+  <p>
+  Note, that it is recommended to use the argument <code> --clear-color 0,0,0,1 </code>
+  which provides a black background as opposed to the OSG bluish default clear color.
+
+  <p>
+  Also note that the terrain will be distant and centered from the viewpoint, and 
+  probably not visible.  The skydome will remain fixed at the eyepoint and will likely
+  obscure the terrain in <i>Trackball mode</i>.  Simply pull the terrain database toward 
+  the view with the right mouse button, or center the view by typing '3' (to enter 
+  'DriveManipulator mode') followed by the &lt;space&gt; bar.  
+
+  <p>
+  This example uses three directives in the <i>.osg</i> file: <b>Latitude</b>, <b>Longitude</b>,
+  and <b>SkyDomeRadius</b>.  <b>Latitude</b> and <b>Longitude</b> are the position of the viewer
+  on planet earth, given in degrees.  Negative values represent South and Western hemispheres
+  respectively.  The values given in the example correspond to San Francisco, California.
+
+  <p>
+  <b>SkyDomeRadius</b> refers to the size of the skydome's radius.  By default, the skydome 
+  has a radius of the distance between the earth and the moon, or <b>384403.0 kilometers</b>.  
+  Most terrain databases will become dwarfed by this large sky dome and will probably not
+  even be visible.  Set this value to something that is large enough to encompass the 
+  terrain you will be viewing, but not so large that it will cause visual anomalies.
+
+  <p>
+  For example, if the terrain is a block 25 Km by 25 Km, then set the radius to about
+  25000 (25 Km - assuming meters as units).
+
+<h2>.OSG File Directives</h2>
+
+  <p>
+  As discussed above, a simple file containing the entry 
+  <p>
+  <table bgcolor=#DDDDDD width=100%>
+    <tr>
+      <td>
+  <blockquote>
+        <PRE>
+    osgEphemerisModel::EphemerisModel {
+        Latitude 38.4765
+        Longitude -122.493
+        SkyDomeRadius 100000
+    }
+        </PRE>
+  </blockquote>
+      </td>
+    </tr>
+  </table>
+
+  is sufficient to have a simple ephemeris model.  A complete list of
+  directives, which can be specified between the <b>{</b> and <b>}</b>
+  brackets in the osgEphemeris::EphemerisModel definition, follows.  
+  Directives whose access value is set to <b>D</b> are dynamically 
+  changable at run-time.  Directives whose access value is set to <b>S</b>
+  are settable at initialization only.
+
+  <p>
+  <blockquote>
+  <table width=100% bgcolor=#FFFFFF cellspacing=2 cellpadding=10 frame=box border=1>
+    <tr bgcolor=#AABBFF valign=top>
+      <th width=10%>Directive</th>
+      <th width=40%>Description</th>
+      <th width=8%>Type</th>
+      <th width=10%>Units</th>
+      <th width=14%>Range</th>
+      <th width=8%>Default<br>Value</th>
+      <th width=8%>Access</th>
+    </tr>
+
+    <tr bgcolor=#FFFFFF valign=top>
+        <td>Latitude</td>
+        <td>The global latitude of the earthbound view position.</td>
+        <td>double</td>
+        <td>degrees</td>
+        <td>-180.0 - 180.0</td>
+        <td> 0.0 </td>
+        <td> <b>D</b> </td>
+    </tr> 
+
+    <tr bgcolor=#DDDDDD valign=top>
+        <td>Longitude</td>
+        <td>The global longitude of the earthbound view position.</td>
+        <td>double</td>
+        <td>degrees</td>
+        <td>-90.0 - 90.0</td>
+        <td> 0.0 </td>
+        <td> <b>D</b> </td>
+    </tr>
+
+    <tr bgcolor=#FFFFFF valign=top>
+        <td> DateTime </td>
+        <td>
+        The argument for the <b>DateTime</b> directive is a string of the form
+        <i>YYYYMMDDhhmmss</i> where 
+        <ul>
+            <li> <i>YYYY</i> indicates the year (e.g. 2006)
+            <li> <i>MM</i> indicates the month (e.g. 09 for September) 
+            <li> <i>DD</i> indicates the day of the month, 
+            <li> <i>hh</i> indicates the hour (range <i>00</i> to <i>23</i>)
+            <li> <i>mm</i> indicates the minutes (range <i>00</i> to <i>59</i>)
+            <li> <i>ss</i> indicates seconds (range <i>00</i> to <i>59</i>).
+        </ul>
+        <p>
+        For example, the string
+        <blockquote><code>
+        20060224162800
+        </code></blockquote>
+
+        represents the 24th of February, 2006, at 2:28 PM.  <i>hh</i>, <i>mm</i>, and
+        <i>ss</i> are optional and will be set to <i>00</i> if omitted.
+
+        </td>
+        <td>string</td>
+        <td></td>
+        <td></td>
+        <td>now</td>
+        <td><b>D</b></td>
+    </tr>
+
+    <tr bgcolor=#DDDDDD valign=top>
+        <td>SkyDomeRadius</td>
+        <td>
+            The SkyDome is a sphere that encompasses the scene, providing 
+            the color of the sky, horizon and a surface to which the sun
+            texture is projected.
+        </td>
+        <td>double</td>
+        <td>&lt;database&gt;</td>
+        <td>-180.0 - 180.0</td>
+        <td> 0.0 </td>
+        <td> <b>S</b> </td>
+    </tr>
+
+    <tr bgcolor=#FFFFFF valign=top>
+        <td>AutoDateTime</td>
+        <td>
+        Direct osgEphemeris to update the date and time to the current date
+        and time as set on the computer.  Setting this to <b>False</b> will
+        allow the application to dynamically change the date and time.  Setting
+        it to <b>True</b> will cause dynamic changes to be ignored and the 
+        current date and time will be used.
+        </td>
+        <td>boolean</td>
+        <td>True/False</td>
+        <td></td>
+        <td>True</td>
+        <td> <b>D</b> </td>
+    </tr>
+
+    <tr bgcolor=#DDDDDD valign=top>
+        <td>MoveWithEyePoint</td>
+        <td>
+        Direct osgEphemeris to move the skydome and all ephemeris components to 
+        be centered at the eyepoint at all times when set to <b>True</b>.  If 
+        set to <b>False</b>, the ephemeris components will be centered around
+        0,0,0 and will not translate spatially.  This is useful for debugging
+        situations.
+        </td>
+        <td>boolean</td>
+        <td>True/False</td>
+        <td></td>
+        <td> True </td>
+        <td> <b>S</b> </td>
+    </tr>
+
+    <tr bgcolor=#FFFFFF valign=top>
+        <td>UpdateCallback</td>
+        <td>
+        Provide osgEphemeris a callback compiled as a dynamically shared object,
+        specified by &lt;shared object&gt;::&lt;class name&gt;.  For example:
+        <blockquote>
+        <code> TimePasses::TimePassesCallback </code>
+        </blockquote>
+        where <i>TimePasses</i> is the dynamically shared object and <i>TimePassesCallback</i>
+        is the class name of the callback.
+        <p>
+        This callback is derived from osgEphemeris::EphemerisUpdateCallback and
+        provides a functor to which a pointer to <i>EphemerisData</i> is passed.  The 
+        callback may then modify the <i>EphemerisData</i>, updating latitude,
+        longitude, date and time.
+
+        <p>
+        See example below
+        </td>
+        <td>Callback</td>
+        <td></td>
+        <td></td>
+        <td>NULL</td>
+        <td> <b>S</b> </td>
+    </tr>
+
+  </table>
+  </blockquote>
+
+
+
+  
+
+</body>
