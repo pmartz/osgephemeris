@@ -48,6 +48,7 @@ SkyDome::SkyDome( bool useBothHemispheres, bool mirrorInSouthernHemisphere ):
             Sphere::InnerOrientation,
             useBothHemispheres ? Sphere::BothHemispheres : Sphere::NorthernHemisphere,
             true ),
+    _sunFudgeScale(1.0),
     _skyTextureUnit(0),
     _sunTextureUnit(1),
     _mirrorInSouthernHemisphere( mirrorInSouthernHemisphere ),
@@ -163,11 +164,12 @@ void SkyDome::traverse(osg::NodeVisitor&nv)
 {
     if (dynamic_cast<osgUtil::UpdateVisitor*>(&nv))
                    return;
+
     // The sun fills 0.53 degrees of visual angle.  The 1.45 multiplier is because the sun texture includes
     // a partially transparent halo around it so there isn't a hard edge.
     osg::Matrix  P;
-    double hfov   = osg::DegreesToRadians(0.53 * 1.45);
-    double vfov   = osg::DegreesToRadians(0.53 * 1.45);
+    double hfov   = osg::DegreesToRadians(0.53 * 1.45 * _sunFudgeScale);
+    double vfov   = osg::DegreesToRadians(0.53 * 1.45 * _sunFudgeScale);
     double left   = -tan(hfov/2.0);
     double right  =  tan(hfov/2.0);
     double bottom = -tan(vfov/2.0);

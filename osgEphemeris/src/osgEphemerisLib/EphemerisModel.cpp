@@ -27,6 +27,7 @@
 
 #include <osg/StateSet>
 #include <osg/CullFace>
+#include <osg/ComputeBoundsVisitor>
 
 #include <osgUtil/Optimizer>
 
@@ -48,8 +49,11 @@ EphemerisModel::EphemerisModel():
     _sunLightNum(0),
     _moonLightNum(1),
     _skyDomeUseSouthernHemisphere(true),
-    _skyDomeMirrorSouthernHemisphere( true )
+    _skyDomeMirrorSouthernHemisphere( true ),
+    _sunFudgeScale(1.0),
+    _moonFudgeScale(1.0)
 {
+
     _ephemerisData   = new (EphemerisData::getDefaultShmemFileName()) EphemerisData;
     _ephemerisEngine = new EphemerisEngine(_ephemerisData);
 
@@ -126,6 +130,17 @@ osg::Vec3 EphemerisModel::getSkyDomeCenter()
     return _center;
 }
 
+void EphemerisModel::setSunFudgeScale( double scale )
+{
+    _sunFudgeScale = scale;
+    if( _skyDome.valid() )
+        _skyDome->setSunFudgeScale( _sunFudgeScale );
+}
+
+void EphemerisModel::setMoonFudgeScale( double scale )
+{
+    _moonFudgeScale = scale;
+}
 
 bool EphemerisModel::_init()
 {
@@ -154,6 +169,7 @@ bool EphemerisModel::_init()
     if( _members & SKY_DOME )
     {
         _skyDome = new SkyDome( _skyDomeUseSouthernHemisphere, _skyDomeMirrorSouthernHemisphere );
+        _skyDome->setSunFudgeScale( _sunFudgeScale );
         // Add this to _skyTx instead of _memberGroup.  _memberGroup is affected
         // by clipping planes, which cause an ugly seam in the sky dome.  But since
         // reflections are already handled internally by SkyDome, clipping planes
@@ -413,7 +429,8 @@ void EphemerisModel::_updateStars()
 void EphemerisModel::_updateMoon()
 {
     osg::Matrix mat = 
-        osg::Matrix::translate( 0.0, SkyDome::getMeanDistanceToMoon() + MoonModel::getMoonRadius() * 1.1, 0.0 ) * 
+        osg::Matrix::scale( _moonFudgeScale, _moonFudgeScale, _moonFudgeScale ) * 
+        osg::Matrix::translate( 0.0, SkyDome::getMeanDistanceToMoon() + MoonModel::getMoonRadius() * 1.1 * _moonFudgeScale, 0.0 ) * 
         osg::Matrix::rotate( _ephemerisData->data[CelestialBodyNames::Moon].alt, 1, 0, 0 ) * 
         osg::Matrix::rotate( _ephemerisData->data[CelestialBodyNames::Moon].azimuth, 0, 0, -1 ); 
 
@@ -592,6 +609,14 @@ void EphemerisModel::_updateSun()
     }
 }
 
+/*
+osg::BoundingSphere EphemerisModel::computeBound() const
+{
+    return osg::BoundingSphere(osg::Vec3(0,0,0), -1.0) ;
+}
+*/
+
+
 void EphemerisModel::traverse(osg::NodeVisitor&nv)
 {
     if( !_inited ) _init();
@@ -600,6 +625,14 @@ void EphemerisModel::traverse(osg::NodeVisitor&nv)
     // and combine stateSets we need to keep separate.
     if (dynamic_cast<osgUtil::BaseOptimizerVisitor*>(&nv))
                    return;
+
+//printf("Node Visitor: className = %s\n", nv.className() );
+
+    if (dynamic_cast<osg::ComputeBoundsVisitor*>(&nv))
+    {
+        //puts("OHHHOAAAA!!");
+                   return;
+    }
 
     osg::Group::traverse( nv );
 }

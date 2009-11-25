@@ -13,8 +13,8 @@ IF(WIN32)
 ADD_DEFINITIONS(-DOSGEPHEMERIS_LIBRARY)
 ENDIF (WIN32)
 
-SET(TARGET_SRC
-		CelestialBodies.cpp
+SET(TARGET_SRC 
+        CelestialBodies.cpp
 		DateTime.cpp
 		EphemerisData.cpp
 		EphemerisEngine.cpp

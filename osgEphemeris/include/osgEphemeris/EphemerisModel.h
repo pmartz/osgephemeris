@@ -1,3 +1,4 @@
+#include <assert.h>
 /*
  -------------------------------------------------------------------------------
  | osgEphemeris - Copyright (C) 2007  Don Burns                                |
@@ -127,7 +128,7 @@ class OSGEPHEMERIS_EXPORT EphemerisModel : public osg::Group
                 SKY_DOME
                 GROUND_PLANE
                 MOON
-                PLANTES
+                PLANETS
                 STAR_FIELD
            
                ALL_MEMBERS combines all of the above.
@@ -332,6 +333,15 @@ class OSGEPHEMERIS_EXPORT EphemerisModel : public osg::Group
           Used internally
           */
         virtual void traverse(osg::NodeVisitor&nv);
+        
+        /**
+          * User requirement to provide a "fudge" factor to the size of the sun -
+          * correct size is 0.53 degrees of visual field of view, but user often
+          * want to exaggerate this.  You may set a scale factor for the sun here
+          */
+        void setSunFudgeScale( double scale ); 
+        void setMoonFudgeScale( double scale );
+
 
     private:
 
@@ -400,7 +410,7 @@ class OSGEPHEMERIS_EXPORT EphemerisModel : public osg::Group
         void _updateStars();
 
         osg::ref_ptr<osg::LightSource> _sunLightSource;
-		  osg::ref_ptr<osg::LightSource> _moonLightSource;
+        osg::ref_ptr<osg::LightSource> _moonLightSource;
         osg::ref_ptr<MoveWithEyePointTransform> _ttx;
         osg::ref_ptr<osg::MatrixTransform> _skyTx;
         osg::ref_ptr<SkyDome> _skyDome;
@@ -427,6 +437,9 @@ class OSGEPHEMERIS_EXPORT EphemerisModel : public osg::Group
         osg::ref_ptr<EphemerisEngine> _ephemerisEngine;
 
         osg::ref_ptr<EphemerisUpdateCallback> _ephemerisUpdateCallback;
+
+        double _sunFudgeScale;
+        double _moonFudgeScale;
 
 };
 

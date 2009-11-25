@@ -24,4 +24,5 @@ SET(TARGET_SRC
 
 LINK_DIRECTORIES( ${OSG_LIB_DIR} )
 ADD_LIBRARY(osgdb_osgephemerismodel SHARED ${TARGET_SRC} )
+SET_TARGET_PROPERTIES( osgdb_osgephemerismodel PROPERTIES PREFIX "" )
 TARGET_LINK_LIBRARIES(osgdb_osgephemerismodel ${osgEphemerisPlugin_LIBS} )

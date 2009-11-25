@@ -53,13 +53,16 @@ class OSGEPHEMERIS_EXPORT SkyDome:  public Sphere
         virtual void traverse(osg::NodeVisitor&);
         static double getMeanDistanceToMoon() { return _meanDistanceToMoon; }
 
+        void setSunFudgeScale( double sunFudgeScale ){ _sunFudgeScale = sunFudgeScale; }
+        double getSunFudgeScale( ){ return _sunFudgeScale; }
+
     private:
 
         static const double _meanDistanceToMoon;
 
         double _sunAzimuth;
         double _sunAltitude;
-        //double _aSunAzimuth;
+        double _sunFudgeScale;
 
         unsigned int _skyTextureUnit;
         osg::ref_ptr<osg::Texture2D> _skyTexture;

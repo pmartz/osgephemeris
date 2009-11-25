@@ -1,12 +1,15 @@
 include $(DWMAKE)/makedefs
+include Make/cmake_defs.mk
 
-DIRS = src\
+SUBDIRS = src\
 
-include $(DWMAKE)/makedirrules
+include $(DWMAKE)/makerules
 
 include Make/install.rules
 include Make/doc.rules
 include Make/version.rules
+include Make/cmake_rules.mk
+
 
 
 

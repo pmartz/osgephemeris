@@ -197,7 +197,26 @@ bool EphemerisModel_readLocalData(osg::Object& obj, osgDB::Input& fr)
              em.setEphemerisUpdateCallback( cb );
 
         ++fr;
+        itAdvanced = true;
     }
+    if( fr[0].matchWord( "SunFudgeScale" ))
+    {
+        ++fr;
+        double sunFudgeScale = atof( fr[0].getStr() );
+        em.setSunFudgeScale( sunFudgeScale );
+        ++fr;
+        itAdvanced = true;
+    }
+
+    if( fr[0].matchWord( "MoonFudgeScale" ))
+    {
+        ++fr;
+        double moonFudgeScale = atof( fr[0].getStr() );
+        em.setMoonFudgeScale( moonFudgeScale );
+        ++fr;
+        itAdvanced = true;
+    }
+
 
     return itAdvanced;
 }
