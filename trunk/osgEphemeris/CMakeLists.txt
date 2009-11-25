@@ -40,7 +40,7 @@ ENDIF("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
 
 ################################################################################
 
-SET(OUTPUT_LIBDIR ${PROJECT_SOURCE_DIR}/lib)
+SET(OUTPUT_LIBDIR ${PROJECT_BINARY_DIR}/lib)
 MAKE_DIRECTORY(${OUTPUT_LIBDIR})
 SET(LIBRARY_OUTPUT_PATH ${OUTPUT_LIBDIR})
 

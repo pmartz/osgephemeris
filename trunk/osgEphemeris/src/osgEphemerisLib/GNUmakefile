@@ -1,7 +1,12 @@
 TOPDIR = ../../
 include $(DWMAKE)/makedefs
+include $(TOPDIR)/Make/cmake_defs.mk
 
 COMPILER_INCLUDE += -I$(TOPDIR)/include
+
+CXXFILES = $(CMAKE_CXXFILES)
+
+ifeq ($(CXXFILES),)
 
 CXXFILES = \
            EphemerisModel.cpp\
@@ -20,12 +25,7 @@ CXXFILES = \
            moon_images.cpp\
            sun_image.cpp\
 
-MOON_IMAGES = \
-        $(THISDIR)/moon_1024x512.jpg\
-        $(THISDIR)/moon_normal_1024x512.jpg\
-
-SUN_IMAGE = \
-            $(THISDIR)/sun.rgba
+endif
 
 LIBS =  -losgUtil -losgText -losg 
 
@@ -33,16 +33,3 @@ LIBNAME = osgEphemeris
 
 include $(DWMAKE)/makerules
 
-moon_images.cpp: $(MOON_IMAGES) $(TOPDIR)/bin/$(OSARCH)/makeMoonImages
-	$(TOPDIR)/bin/$(OSARCH)/makeMoonImages $(MOON_IMAGES) > $@ 
-
-
-$(TOPDIR)/bin/$(OSARCH)/makeMoonImages:
-	cd $(THISDIR)/../MakeMoonImages; make
-
-
-sun_image.cpp: $(SUN_IMAGE) $(TOPDIR)/bin/$(OSARCH)/makeSunImage
-	$(TOPDIR)/bin/$(OSARCH)/makeSunImage $(SUN_IMAGE) > $@ 
-
-$(TOPDIR)/bin/$(OSARCH)/makeSunImage: 
-	cd $(THISDIR)/../MakeSunImage; make

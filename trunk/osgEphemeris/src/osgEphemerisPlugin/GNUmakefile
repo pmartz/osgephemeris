@@ -11,6 +11,6 @@ LINKER_ARGS += -fPIC -L$(TOPDIR)/lib/$(OS)$(ARCH)/
 
 LIBS = -losgEphemeris
 
-LIB = osgdb_osgEphemerisModel.so
+LIB = osgdb_osgephemerismodel.so
 
 include $(DWMAKE)/makerules
