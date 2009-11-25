@@ -81,6 +81,7 @@ class OSGEPHEMERIS_EXPORT SkyDome:  public Sphere
                 SectorUpdateCallback( double &sunAz, double min, double max, unsigned int sunTextureUnit );
                 //virtual bool cull(osg::NodeVisitor* nv, osg::Drawable *dbl, osg::State*) const ;
                 virtual void update(osg::NodeVisitor* nv, osg::Drawable* dbl);
+
             private:
                 double &_sunAz;
                 double _min, _max;

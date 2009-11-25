@@ -447,11 +447,12 @@ void EphemerisModel::_updateMoon()
     _moon->setSunPosition( mv );
 
     // moon light
-    if( _moonLightSource.valid() ){
+    if( _moonLightSource.valid() )
+    {
         osg::Vec3d sunVecNormalized = _sunVec;
-          sunVecNormalized.normalize();
-          osg::Vec3d vecToMoon(mat(3,0), mat(3,1), mat(3,2));
-          vecToMoon.normalize();
+        sunVecNormalized.normalize();
+        osg::Vec3d vecToMoon(mat(3,0), mat(3,1), mat(3,2));
+        vecToMoon.normalize();
           // moon brightness in range {0,1}
         // increasing sunlight makes moonlight disappear
         double sunfactor = -2.0 * osg::RadiansToDegrees(_ephemerisData->data[CelestialBodyNames::Sun].alt);
@@ -609,12 +610,6 @@ void EphemerisModel::_updateSun()
     }
 }
 
-/*
-osg::BoundingSphere EphemerisModel::computeBound() const
-{
-    return osg::BoundingSphere(osg::Vec3(0,0,0), -1.0) ;
-}
-*/
 
 
 void EphemerisModel::traverse(osg::NodeVisitor&nv)
@@ -625,14 +620,6 @@ void EphemerisModel::traverse(osg::NodeVisitor&nv)
     // and combine stateSets we need to keep separate.
     if (dynamic_cast<osgUtil::BaseOptimizerVisitor*>(&nv))
                    return;
-
-//printf("Node Visitor: className = %s\n", nv.className() );
-
-    if (dynamic_cast<osg::ComputeBoundsVisitor*>(&nv))
-    {
-        //puts("OHHHOAAAA!!");
-                   return;
-    }
 
     osg::Group::traverse( nv );
 }

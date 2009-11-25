@@ -42,6 +42,41 @@ const double SkyDome::_meanDistanceToMoon = 384403000.0;
 #define SKY_DOME_X_SIZE 128
 #define SKY_DOME_Y_SIZE 128
 
+// Looks like somewhere along the way, OSG stopped calling Drawable Callbacks....
+// So we'll do it ourselves.
+class SkyDomeUpdateCallback: public osg::NodeCallback
+{
+    public:
+        SkyDomeUpdateCallback( SkyDome *skyDome ):
+            _skyDome(skyDome)
+        {}
+
+        virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+        {
+            _callDrawableCallbacks( _skyDome->getNorthernHemisphere(), nv );
+            _callDrawableCallbacks( _skyDome->getSouthernHemisphere(), nv );
+            traverse(node,nv);
+        }
+
+    private:
+        osg::ref_ptr<SkyDome> _skyDome;
+
+        void _callDrawableCallbacks( osg::Geode *geode, osg::NodeVisitor *nv )
+        {
+            if( geode != NULL )
+            {
+                for( unsigned int i= 0; i < geode->getNumDrawables(); i++ )
+                {
+                    osg::Drawable *dbl = geode->getDrawable(i);
+                    osg::Drawable::UpdateCallback *updateCallback = dbl->getUpdateCallback();
+                    if( updateCallback != NULL )
+                        updateCallback->update( nv, dbl );
+                }
+            }
+        }
+
+};
+
 SkyDome::SkyDome( bool useBothHemispheres, bool mirrorInSouthernHemisphere ):
     Sphere( _meanDistanceToMoon,
             Sphere::TessHigh,
@@ -57,6 +92,7 @@ SkyDome::SkyDome( bool useBothHemispheres, bool mirrorInSouthernHemisphere ):
 {
     unsigned int nsectors = _northernHemisphere->getNumDrawables();
 
+    /*_northernHemisphere->*/setUpdateCallback( new SkyDomeUpdateCallback( this ) );
 
     // This sets up the "state culling" of the projected texture for the sun.  
     // We want to avoid projecting the sun texture on any other sphere sectors
