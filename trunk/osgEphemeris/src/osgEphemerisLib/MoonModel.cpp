@@ -56,6 +56,8 @@ std::string MoonModel::_vertexShaderProgram =
     "        gl_Position = ftransform();"
     "        gl_FrontColor = vec4(1,1,1,1);"
     "        uv = gl_MultiTexCoord0.st;"
+    " uv.s -= 0.25;"
+    //" uv.t = 1.0- uv.t;"
     "        vec3 n = normalize( gl_Normal);"
     "        vec3 t = normalize( Tangent);"
     "        vec3 bi = normalize(cross(n, t));"
@@ -119,6 +121,8 @@ void MoonModel::_buildStateSet()
 
 
     osg::ref_ptr<osg::Texture2D> baseTexture = new osg::Texture2D;
+    baseTexture->setWrap( osg::Texture::WRAP_S, osg::Texture::REPEAT );
+    baseTexture->setWrap( osg::Texture::WRAP_T, osg::Texture::REPEAT );
     baseTexture->setFilter( osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
     baseTexture->setFilter( osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR );
     baseTexture->setImage( baseImage.get() );
@@ -138,6 +142,8 @@ void MoonModel::_buildStateSet()
             osg::Image::NO_DELETE );
 
     osg::ref_ptr<osg::Texture2D> bumpTexture = new osg::Texture2D;
+    bumpTexture->setWrap( osg::Texture::WRAP_S, osg::Texture::REPEAT );
+    bumpTexture->setWrap( osg::Texture::WRAP_T, osg::Texture::REPEAT );
     bumpTexture->setFilter( osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
     bumpTexture->setFilter( osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR );
     bumpTexture->setImage( bumpImage.get());
