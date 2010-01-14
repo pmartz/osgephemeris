@@ -90,6 +90,14 @@ class OSGEPHEMERIS_EXPORT EphemerisEngine: public osg::Referenced
          */
         void update(EphemerisData *ephemerisData, bool updateTime=true);
 
+        /**
+          Compute the local sidereal time. Public so that applications can use
+          osgEphemeris as a compute-only engine.
+          \param mjd - Mean Julian date.
+          \param lng - Negated longitude in degrees.
+         */
+        static double getLocalSiderealTimePrecise( double mjd, double longitude );
+
 
     protected:
         ~EphemerisEngine() {}
@@ -110,7 +118,6 @@ class OSGEPHEMERIS_EXPORT EphemerisEngine: public osg::Referenced
 
         static void _getLsnRsn( double mjd, double &lsn, double &rsn);
         static void _getAnomaly( double ma, double s, double &nu, double &ea);
-        static double getLocalSiderealTimePrecise( double mjd, double longitude );
         static void _RADecElevToAzimAlt( 
                 double rightAscension,
                 double declination,
