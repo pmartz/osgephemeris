@@ -3,7 +3,7 @@ INST_LOCATION=/usr/local/
 install:
 	install lib/$(OSARCH)/libosgEphemeris.so $(INST_LOCATION)/lib$(ARCH_EXT)/
 	install -d $(INST_LOCATION)/lib$(ARCH_EXT)/osgPlugins/
-	install -D lib/$(OSARCH)/osgdb_osgEphemerisModel.so $(INST_LOCATION)/lib$(ARCH_EXT)/osgPlugins/osgdb_osgEphemerisModel.so
+	install -D lib/$(OSARCH)/osgdb_osgephemerismodel.so $(INST_LOCATION)/lib$(ARCH_EXT)/osgPlugins/osgdb_osgephemerismodel.so
 	install -d $(INST_LOCATION)/include/osgEphemeris/
 	@for f in `ls include/osgEphemeris | grep -v CVS`; \
     do \
