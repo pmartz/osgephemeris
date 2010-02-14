@@ -321,6 +321,7 @@ double EphemerisEngine::getLocalSiderealTimePrecise( double mjd, double lng )
     x /= 3600.0;
     double gst = (1.0/SIDRATE) * hr + x;
     double lst = gst - radhr( lng );
+
     lst -= 24.0 * floor( lst / 24.0 );
 
 #undef deghr
