@@ -300,6 +300,8 @@ void EphemerisEngine::_getAnomaly( double ma, double s, double &nu, double &ea)
 }
 
 
+#if 0 // ORIGINAL VERSION BEFORE CHANGES - will test
+
 double EphemerisEngine::getLocalSiderealTimePrecise( double mjd, double lng )
 {
 #define deghr(x)        ((x)/15.)
@@ -328,6 +330,37 @@ double EphemerisEngine::getLocalSiderealTimePrecise( double mjd, double lng )
 #undef radhr
     return lst;
 }
+
+#else // Changed version of this function with Paul's suggested changes
+
+double EphemerisEngine::getLocalSiderealTimePrecise( double mjd, double lng )
+{
+    static const double MJD0    = 2415020.0;
+    static const double J2000   = 2451545.0 - MJD0;
+    static const double SIDRATE = 0.9972695677;
+
+    double day = floor(mjd - 0.5) + 0.5;
+    double hr = (mjd - day) * 24.0;
+    double T, x;
+
+    T = ((int)(mjd - 0.5) + 0.5 - J2000)/36525.0;
+    x = 24110.54841 + (8640184.812866 + (0.093104 - 6.2e-6 * T) * T) * T;
+    x /= 3600.0;
+    double gst = (1.0/SIDRATE) * hr + x;
+
+    /// NOTE THE SIGN CHANGE IN THE NEXT LINE
+    // 
+    double lst = gst + lng/15.0; 
+    //               ^
+    // here ---------|
+
+    lst -= 24.0 * floor( lst / 24.0 );
+
+#undef deghr
+#undef radhr
+    return lst;
+}
+#endif
 
 
 void EphemerisEngine::_RADecElevToAzimAlt( 
