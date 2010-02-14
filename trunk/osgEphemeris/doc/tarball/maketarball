@@ -1,17 +1,14 @@
 #!/bin/sh
 
-VERSION=`date +"%Y%m%d%H%M%S"`
-TARBALL_NAME=osgEphemeris-"$VERSION".tar.gz
-TARBALL_DIR=osgEphemeris-"$VERSION"
+NAME=$1
+TARBALL=$NAME.tgz
 
-rm -rf $TARBALL_DIR
-mkdir $TARBALL_DIR
-/usr/bin/cvs -Q -d /cvs/osg export -D now -d $TARBALL_DIR osgEphemeris
+rm -rf $NAME $TARBALL
 
-tar cvf - $TARBALL_DIR | gzip > $TARBALL_NAME
+/usr/bin/svn -q  export file:///svn/osgEphemeris/trunk/osgEphemeris $NAME
 
-rm -rf $TARBALL_DIR
-mv $TARBALL_NAME Download/Generated
+tar cvf - $NAME | gzip > $TARBALL
+rm -rf $NAME
 
 exit 0
 
