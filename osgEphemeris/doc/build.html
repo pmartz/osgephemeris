@@ -9,9 +9,9 @@
 <h2> Downloading and Building <i>osgEphemeris</i></h2>
 
   <p>
-  The current build is tested solely on Linux.  As most osg components, <i>osgEphemeris</i>
-  should port easily to Windows and other platforms with little effort.  Contributions are
-  welcome.
+  The current build is tested with Windows and Linux.  DWMake build <i>should</i> work
+  for Mac OSX as well, but remains somewhat untested.  Contributions are welcome.
+
 
   <h3>Downloading <i>osgEphemeris</i></h3>
 
@@ -19,151 +19,125 @@
   Current access to <i>osgEphemeris</i> is through secure svn on andesengineering.com:
 
   <p>
-  <table bgcolor=#DDDDDD width=100%>
-    <tr>
-      <td>
-  <blockquote>
-        <br>
-        <code>
+  <div style="background:#DDDDDD;" width=100%>
+        <pre><code>
         svn co https://www.andesengineering.com/svn/osgEphemeris/trunk/osgEphemeris
-        </code>
-        <br>
-  </blockquote>
-      </td>
-    </tr>
-  </table>
-
+        </code></pre>
+    </div>
   <!--
-  <p>
-  If CVS access is restricted or you prefer to download a recent tarball, you may
-  get a recent one, or generate a current one <a href="tarball/index.php">here</a>.
   -->
-
+  <p>
+  If SVN access is restricted or you prefer, you may 
+  <form action=tarball/get_tarball.php>
+  <input type=submit value="Download a tarball">
+  </form>
 
 
   <h3>Building <i>osgEphemeris</i> on Linux</h3>
 
-  <h4> Prerequisite: <i>DWMake</i></h4>
+  <h4> I.  Building with <i>DWMake</i></h4>
   <p>
-  A prerequisite for building <i>osgEphemeris</i> is <b>DWMake</b>.  DWMake is 
-  a simple set of GNU makefile definitions and rules for a set of common targets.
-  Instructions for getting and installing DWmake follow
+  DWMake is a simple set of GNU makefile definitions and rules for a set of common targets.
+  If you don't yet have DWMake installed, follow these two steps:
 
-  <p>
-  <i>DWMake</i> is also available through svn:
-  <p>
-  <table bgcolor=#DDDDDD width=100%>
-    <tr>
-      <td>
-  <blockquote>
-        <br>
-        <code>
-        svn co https://www.andesengineering.com/DWMake/trunk/DWMake
-        </code>
-        <br>
-        <br>
-  </blockquote>
-      </td>
-    </tr>
-  </table>
+  <ol type=1>
+  <li> <b>Install DWMake (if not yet installed)</b>
+  <ol type=A>
+    <li>
+    <form action=tarball/getdwmake.php method=post >
+      <input type=submit value="Download DWMake">
+    </form>
+    </li>
+    <li> Unpack the tarball
+    <table bgcolor=#DDDDDD width=100%><tr><td>
+        <br><code>
+        $ tar xvfz DWmake.tgz <br>
+        </code><br>
+        </td></tr></table>
+    <li> Set the environmental variable DWMAKE to the directory where you unpacked DWMake
 
-  <p>
-  To build all projects using <i>DWMake</i> a global environmental variable 
-  <b>DWMAKE</b> needs to be defined, which points to the top level directory
-  where <i>DWMake</i> is installed.   If you've just run the <i>cvs</i>
-  command above, then the following applies:
+        <table bgcolor=#DDDDDD width=100%><tr><td><code>
 
-  <p>
-  <table bgcolor=#DDDDDD width=100%>
-    <tr><td bgcolor=#FFFFFF> For CSH: </td></tr>
-    <tr>
-      <td>
-  <blockquote>
         <br>
-        <code>
-        % cd DWMake<br>
-        % setenv DWMAKE `pwd`
-        </code>
-        <br>
-        <br>
-  </blockquote>
-      </td>
-    </tr>
-    <tr><td bgcolor=#FFFFFF> For SH or BASH: </td></tr>
-    <tr>
-      <td>
-  <blockquote>
-        <br>
-        <code>
-        $ cd DWMake<br>
+        $ cd DWMake
         $ export DWMAKE=`pwd`
-        </code>
+        </code> <br>
         <br>
-        <br>
-  </blockquote>
-      </td>
-    </tr>
-  </table>
+        </td></tr></table>
 
-  <p>
-  You may want to add these to your <i>.profile</i>, <i>.bashrc</i>, or <i>.cshrc</i>, whichever 
-  is appropriate.
+    </ol>
 
-  <h4>Building <i>osgEphemeris</i></h4>
-
-  Once you have <i>DWMake</i> installed and the <b>DWMAKE</b> environmental 
-  variable defined, it is just a matter of typing make in the osgEphemeris
-  directory:
-
-  <p>
-  <table bgcolor=#DDDDDD width=100%>
-    <tr>
-      <td>
-  <blockquote>
+    <li> <b>Build </b>
+        <table bgcolor=#DDDDDD width=100%> <tr><td>
         <br>
         <code>
-        % cd osgEphemeris<br>
-        % make
-        </code>
-        <br>
-        <br>
-  </blockquote>
-      </td>
-    </tr>
-  </table>
+             $ cd osgEphemeris<br>
+             $ make </code>
+        <br><br>
+        </td></tr></table>
 
 
-  <h4> Installing <i>osgEphemeris</i></h4>
+
+    <li> <b>Install</b>
 
   <p>
   By default <i>osgEphemeris</i> installes in /usr/local.  You may install in other 
   locations by using the directive <b>INST_LOCATION</b>:
 
   <p>
-  <table bgcolor=#DDDDDD width=100%>
-    <tr>
-      <td>
-  <blockquote>
-        <br>
-        <code>
+  <div style="background:#DDDDDD;">
+        <pre><code>
         % make install <br>
-        </code>
-        <b>OR</b><br>
-        <code>
+        </code></pre><b>or</b><br>
+        <pre><code>
         % make INST_LOCATION=/usr install
-        </code>
-        <br>
-        <br>
-  </blockquote>
-      </td>
-    </tr>
-  </table>
+        </code></pre>
+</div>
 
   <p>
   The above command will install the include/osgEphemeris directory in 
   <b>INST_LOCATION</b>/include, the library <i>libosgEphemeris.so</i> in
   <b>INST_LOCATION</b>/lib and the plugin <i>osgdb_osgEphemerisModel.so</i> in
   <b>INST_LOCATION</b>/lib/osgPlugins.  
+
+
+  <h4> II.  Building with <i>CMake</i></h4>
+
+  <p>
+  <b> Important Note: Avoid building osgEphemeris with CMake in the source directory. </b> The Makefiles
+  generated by CMake will conflict with DWMake's GNUmakefiles.
+
+  <p>
+  Quick synopsis of command line session to build with cmake:
+
+  <div style="background:#DDDDDD;">
+  <pre><code>
+  $ cd osgEphemeris
+  $ mkdir osgEphemeris-Build
+  $ cd osgEphemeris-Build
+  $ cmake ..
+  $ make
+  $ make install
+  </code></pre>
+  </div>
+  
+  <h4> III.  Use DWMake to build CMake </h4>
+
+  <p>
+  The DWMake set up in osgEphemeris also allows the CMake build to be called by DWMake.  This has the advantage
+  of DWMake's use of symbolic links to quickly switch between debug and optimized versions, and allows for 
+  installation of symbolic links, keeping the development system with a single installed version.
+
+  <div style="background:#DDDDDD;">
+  <pre><code>
+  $ cd osgEphemeris
+  $ make cmake </code</pre>
+  <p>
+  <b>or</b>
+  <pre><code>
+  $ make cmake_debug
+  </code></pre>
+  </div>
 
 <hr>
 <table width=100%><tr>
