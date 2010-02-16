@@ -23,7 +23,7 @@
 #define __SHMEM_DEF
 
 #include <string>
-#ifdef _DARWIN
+#if defined( _DARWIN ) || defined( __APPLE__ )
 #include <malloc/malloc.h>
 #else
 #include <malloc.h>

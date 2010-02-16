@@ -192,7 +192,7 @@ bool DateTime::isDaylightSavingsTime() const
     return (_tm.tm_isdst != 0);
 }
 
-double DateTime::getModifiedJulianDate() const
+double DateTime::getModifiedJulianDate( bool useSystemTimeZone ) const
 {
     double mjd;
     int b, d, m, y;
@@ -200,13 +200,18 @@ double DateTime::getModifiedJulianDate() const
 
     // Get GMT first
     struct tm gmt = _tm;
-    tzset();
-#ifdef  _DARWIN
-    gmt.tm_sec += gmt.tm_gmtoff;           /* Seconds east of UTC.  */
-#else
-    gmt.tm_sec += timezone;         /* Seconds east of UTC.  */
-#endif
-    mktime(&gmt);
+    if( useSystemTimeZone )
+    {
+        tzset();
+    #if defined( _DARWIN ) || defined( __APPLE__ )
+        gmt.tm_sec += gmt.tm_gmtoff;           /* Seconds east of UTC.  */
+    #else
+        gmt.tm_sec += timezone;         /* Seconds east of UTC.  */
+    #endif
+        mktime(&gmt);
+    }
+    // else
+    //    assume we already have GMT.
 
     double day   =  (double)(gmt.tm_mday) +           // Day
                     (double(gmt.tm_hour)/24.0) +      // hour
@@ -255,7 +260,7 @@ DateTime DateTime::getGMT() const
     struct tm gmt = _tm;
 
     tzset();
-#ifdef  _DARWIN
+#if defined( _DARWIN ) || defined( __APPLE__ )
     gmt.tm_sec += gmt.tm_gmtoff;           /* Seconds east of UTC.  */
 #else
     gmt.tm_sec += timezone;         /* Seconds east of UTC.  */
