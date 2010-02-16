@@ -74,7 +74,7 @@ class OSGEPHEMERIS_EXPORT DateTime
         /**
           get the Modified Julian Date based on GMT, from the current date and time.
           */
-        double      getModifiedJulianDate() const; 
+        double      getModifiedJulianDate( bool useSystemTimeZone=true ) const; 
 
         /**
           Get the Greenwhich Mean Time from the current date and time.
