@@ -12,7 +12,6 @@ SUBDIRS = \
     osgEphemerisPlugin\
     Gui\
     CallbackExample\
-    BLAH
 
 #    Viewer\
 

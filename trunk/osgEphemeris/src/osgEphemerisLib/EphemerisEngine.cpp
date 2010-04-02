@@ -139,7 +139,7 @@ void EphemerisEngine::update( EphemerisData *ephemData, bool updateTime )
     _getLsnRsn( ephemData->modifiedJulianDate, lsn, rsn );
 
     ephemData->localSiderealTime = 
-        getLocalSiderealTimePrecise( ephemData->modifiedJulianDate, -ephemData->longitude ); // in degrees
+        getLocalSiderealTimePrecise( ephemData->modifiedJulianDate, ephemData->longitude ); // in degrees
 
     _sun    ->updatePosition( ephemData->modifiedJulianDate );
     _updateData( *ephemData, *_sun.get(), rsn, ephemData->data[CelestialBodyNames::Sun]   );
