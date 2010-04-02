@@ -175,7 +175,7 @@ class OSGEPHEMERIS_EXPORT DateTime
           */
         bool isDaylightSavingsTime() const;
 
-    private:
+    protected:
         struct tm _tm;
         static const char *weekDayNames[7];
         static const char *monthNames[12];

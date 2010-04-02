@@ -102,7 +102,6 @@ class OSGEPHEMERIS_EXPORT EphemerisEngine: public osg::Referenced
     protected:
         ~EphemerisEngine() {}
 
-    private:
         EphemerisData *_ephemerisData;
         osg::ref_ptr<osgEphemeris::Sun >_sun;
         osg::ref_ptr<Moon>      _moon;

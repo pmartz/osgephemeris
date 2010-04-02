@@ -343,7 +343,7 @@ class OSGEPHEMERIS_EXPORT EphemerisModel : public osg::Group
         void setMoonFudgeScale( double scale );
 
 
-    private:
+    protected:
 
         bool _inited;
         bool _init();
@@ -372,7 +372,7 @@ class OSGEPHEMERIS_EXPORT EphemerisModel : public osg::Group
                     traverse(node,nv);
                 }
 
-            private:
+            protected:
                 EphemerisModel &_ephemerisModel;
         };
 
@@ -400,7 +400,7 @@ class OSGEPHEMERIS_EXPORT EphemerisModel : public osg::Group
                     }
                     return true;
                 }
-            private:
+            protected:
                 bool _enabled;
                 osg::Vec3 _center;
         };

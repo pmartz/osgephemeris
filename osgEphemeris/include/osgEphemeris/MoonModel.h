@@ -51,7 +51,7 @@ class OSGEPHEMERIS_EXPORT MoonModel : public Sphere
           */
         void setSunPosition( osg::Vec3 sun );
 
-    private:
+    protected:
 
         static const double _moonRadius;
         static std::string _vertexShaderProgram;

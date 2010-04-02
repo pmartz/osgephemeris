@@ -113,8 +113,6 @@ class OSGEPHEMERIS_EXPORT Sun : public CelestialBody
     protected:
         virtual ~Sun();
 
-    private:
-
         double xs, ys;       // the sun's rectangular geocentric coordinates
         double distance;     // the sun's distance to the earth
 };
