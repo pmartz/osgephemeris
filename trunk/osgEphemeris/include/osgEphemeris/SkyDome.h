@@ -56,7 +56,7 @@ class OSGEPHEMERIS_EXPORT SkyDome:  public Sphere
         void setSunFudgeScale( double sunFudgeScale ){ _sunFudgeScale = sunFudgeScale; }
         double getSunFudgeScale( ){ return _sunFudgeScale; }
 
-    private:
+    protected:
 
         static const double _meanDistanceToMoon;
 
@@ -82,7 +82,7 @@ class OSGEPHEMERIS_EXPORT SkyDome:  public Sphere
                 //virtual bool cull(osg::NodeVisitor* nv, osg::Drawable *dbl, osg::State*) const ;
                 virtual void update(osg::NodeVisitor* nv, osg::Drawable* dbl);
 
-            private:
+            protected:
                 double &_sunAz;
                 double _min, _max;
                 unsigned int _sunTextureUnit;

@@ -72,7 +72,7 @@ class OSGEPHEMERIS_EXPORT Shmem
           */
 	    void operator delete( void * );
 
-    private :
+    protected :
         void *start;
     	size_t length;
 };

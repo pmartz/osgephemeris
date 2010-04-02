@@ -76,7 +76,7 @@ class OSGEPHEMERIS_EXPORT StarField: public osg::MatrixTransform
           */
         void setSunAltitude(  double altitude );
 
-    private:
+    protected:
         struct StarData {
             std::string name;
             double right_ascension;

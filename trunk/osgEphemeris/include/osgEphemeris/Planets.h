@@ -39,7 +39,7 @@ class OSGEPHEMERIS_EXPORT Planets : public osg::Group
 
         void update( osgEphemeris::EphemerisData * );
 
-    private:
+    protected:
         osg::ref_ptr<osg::MatrixTransform> _mercuryTx;
         osg::ref_ptr<osg::MatrixTransform> _venusTx;
         osg::ref_ptr<osg::MatrixTransform> _marsTx;
