@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 2.6)
 
+set(ProjectName osgEphemeris)
+
 set (CMAKE_BUILD_TYPE Release)
 
-set(ProjectName osgEphemeris)
+set(CMAKE_MODULE_PATH "${osgEphemeris_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
+
 PROJECT(${ProjectName})
 
 IF(UNIX)

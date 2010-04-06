@@ -1,28 +1,42 @@
 set( HEADER_PATH ${CMAKE_SOURCE_DIR}/include/osgEphemeris )
 
 set( osgEphemerisPlugin_LIBS osgEphemeris )
-foreach( L OpenThreads osgDB osgUtil osgText osg )
-    find_package( ${L} )
-    set( osgEphemeris_LIBS ${osgEphemerisPlugin_LIBS} ${L} )
-endforeach( L OpenThreads osgDB osgUtil osgText osg )
 
-string( REGEX REPLACE [/][^/]*$ ""  OSG_LIB_DIR ${OSG_LIBRARY} )
+set(CMAKE_MODULE_PATH "${osgEphemeris_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
-include_directories( 
-        ${CMAKE_SOURCE_DIR}/include 
-        ${OPENTHREADS_INCLUDE_DIR} 
-        ${OSGDB_INCLUDE_DIR} 
-        ${OSGUTIL_INCLUDE_DIR} 
-        ${OSGTEXT_INCLUDE_DIR} 
-        ${OSG_INCLUDE_DIR} )
+find_package(OpenSceneGraph 2.0.0 REQUIRED osgDB osgUtil osgText)
 
+
+include_directories(
+        ${CMAKE_SOURCE_DIR}/include
+        ${OPENSCENEGRAPH_INCLUDE_DIRS}
+    )
 
 SET(TARGET_SRC
     IO_EphemerisModel.cpp
 	)
 
 
-LINK_DIRECTORIES( ${OSG_LIB_DIR} )
-ADD_LIBRARY(osgdb_osgephemerismodel SHARED ${TARGET_SRC} )
-SET_TARGET_PROPERTIES( osgdb_osgephemerismodel PROPERTIES PREFIX "" )
-TARGET_LINK_LIBRARIES(osgdb_osgephemerismodel ${osgEphemerisPlugin_LIBS} )
+SET(TARGET_NAME osgdb_osgephemerismodel)
+ADD_LIBRARY(${TARGET_NAME} SHARED ${TARGET_SRC} )
+SET_TARGET_PROPERTIES( ${TARGET_NAME} PROPERTIES PREFIX "" )
+TARGET_LINK_LIBRARIES(${TARGET_NAME} ${osgEphemerisPlugin_LIBS} ${OPENSCENEGRAPH_LIBRARIES} )
+
+
+SET(INSTALL_INCDIR include)
+SET(INSTALL_BINDIR bin/osgPlugins-${OPENSCENEGRAPH_VERSION})
+IF(WIN32)
+    SET(INSTALL_LIBDIR bin)
+    SET(INSTALL_ARCHIVEDIR lib)
+ELSE()
+    SET(INSTALL_LIBDIR lib${LIB_POSTFIX})
+    SET(INSTALL_ARCHIVEDIR lib${LIB_POSTFIX})
+ENDIF()
+
+
+INSTALL(
+    TARGETS ${TARGET_NAME}
+    RUNTIME DESTINATION ${INSTALL_BINDIR}
+    LIBRARY DESTINATION ${INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${INSTALL_ARCHIVEDIR}
+)
