@@ -1,19 +1,20 @@
 set( HEADER_PATH ${CMAKE_SOURCE_DIR}/include/osgEphemeris )
 set( osgEphemeris_LIBS )
-foreach( L OpenThreads osgDB osgUtil osgText osg )
-    find_package( ${L} )
-    set( osgEphemeris_LIBS ${osgEphemeris_LIBS} ${L} )
-endforeach( L OpenThreads osgDB osgUtil osgText osg )
+set( CMAKE_MODULE_PATH "${osgEphemeris_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
-string( REGEX REPLACE [/][^/]*$ ""  OSG_LIB_DIR ${OSG_LIBRARY} )
+find_package(OpenSceneGraph 2.0.0 REQUIRED osgDB osgUtil osgText)
 
-include_directories( ${CMAKE_SOURCE_DIR}/include ${OPENTHREADS_INCLUDE_DIR} ${OSGDB_INCLUDE_DIR} ${OSGUTIL_INCLUDE_DIR} ${OSGTEXT_INCLUDE_DIR} ${OSG_INCLUDE_DIR} )
+
+include_directories(
+        ${CMAKE_SOURCE_DIR}/include
+        ${OPENSCENEGRAPH_INCLUDE_DIRS}
+    )
 
 IF(WIN32)
 ADD_DEFINITIONS(-DOSGEPHEMERIS_LIBRARY)
 ENDIF (WIN32)
 
-SET(TARGET_SRC 
+SET(TARGET_SRC
         CelestialBodies.cpp
 		DateTime.cpp
 		EphemerisData.cpp
@@ -31,8 +32,7 @@ SET(TARGET_SRC
 		sun_image.cpp
 	)
 
-
-SET(TARGET_H
+SET(PUBLIC_HEADERS
 		${HEADER_PATH}/CelestialBodies.h
 		${HEADER_PATH}/DateTime.h
 		${HEADER_PATH}/EphemerisData.h
@@ -49,8 +49,39 @@ SET(TARGET_H
 		${HEADER_PATH}/StarField.h
 	)
 
-LINK_DIRECTORIES( ${OSG_LIB_DIR} )
-ADD_LIBRARY(osgEphemeris SHARED ${TARGET_SRC} ${TARGET_H})
-TARGET_LINK_LIBRARIES(osgEphemeris ${osgEphemeris_LIBS} )
+SET(PRIVATE_HEADERS
+		star_data.h
+	)
+
+SOURCE_GROUP(
+        "Private Header Files"
+        ${PRIVATE_HEADERS}
+    )
+
+SET(TARGET_NAME osgEphemeris)
+ADD_LIBRARY(${TARGET_NAME} SHARED ${TARGET_SRC} ${PUBLIC_HEADERS} ${PRIVATE_HEADERS})
+TARGET_LINK_LIBRARIES(${TARGET_NAME} ${osgEphemeris_LIBS} ${OPENSCENEGRAPH_LIBRARIES})
 
 
+SET(INSTALL_INCDIR include)
+SET(INSTALL_BINDIR bin)
+IF(WIN32)
+    SET(INSTALL_LIBDIR bin)
+    SET(INSTALL_ARCHIVEDIR lib)
+ELSE()
+    SET(INSTALL_LIBDIR lib${LIB_POSTFIX})
+    SET(INSTALL_ARCHIVEDIR lib${LIB_POSTFIX})
+ENDIF()
+
+
+INSTALL(
+        TARGETS ${TARGET_NAME}
+        RUNTIME DESTINATION ${INSTALL_BINDIR}
+        LIBRARY DESTINATION ${INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${INSTALL_ARCHIVEDIR}
+    )
+
+INSTALL(
+        FILES       ${PUBLIC_HEADERS}
+        DESTINATION ${INSTALL_INCDIR}/${TARGET_NAME}
+    )
