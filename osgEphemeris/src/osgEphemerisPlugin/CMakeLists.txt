@@ -2,8 +2,6 @@ set( HEADER_PATH ${CMAKE_SOURCE_DIR}/include/osgEphemeris )
 
 set( osgEphemerisPlugin_LIBS osgEphemeris )
 
-set(CMAKE_MODULE_PATH "${osgEphemeris_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
-
 find_package(OpenSceneGraph 2.0.0 REQUIRED osgDB osgUtil osgText)
 
 
@@ -29,8 +27,8 @@ IF(WIN32)
     SET(INSTALL_LIBDIR bin)
     SET(INSTALL_ARCHIVEDIR lib)
 ELSE()
-    SET(INSTALL_LIBDIR lib${LIB_POSTFIX})
-    SET(INSTALL_ARCHIVEDIR lib${LIB_POSTFIX})
+    SET(INSTALL_LIBDIR lib${LIB_POSTFIX}/osgPlugins-${OPENSCENEGRAPH_VERSION})
+    SET(INSTALL_ARCHIVEDIR lib${LIB_POSTFIX}/osgPlugins-${OPENSCENEGRAPH_VERSION})
 ENDIF()
 
 

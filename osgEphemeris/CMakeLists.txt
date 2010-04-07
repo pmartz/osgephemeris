@@ -8,6 +8,10 @@ set(CMAKE_MODULE_PATH "${osgEphemeris_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PA
 
 PROJECT(${ProjectName})
 
+# We have some custom .cmake scripts not in the official distribution.
+SET(CMAKE_MODULE_PATH
+    "${osgEphemeris_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
+
 IF(UNIX)
     # Some Unicies need explicit linkage to the Math library or the build fails.
     FIND_LIBRARY(MATH_LIBRARY m)
@@ -32,7 +36,30 @@ IF(WIN32)
     ENDIF(MSVC)
 ENDIF (WIN32)
 
-SET(CMAKE_DEBUG_POSTFIX  "d")
+SET(CMAKE_DEBUG_POSTFIX "d" CACHE STRING "add a postfix, usually d")
+SET(CMAKE_RELEASE_POSTFIX "" CACHE STRING "add a postfix, usually empty")
+SET(CMAKE_RELWITHDEBINFO_POSTFIX "rd" CACHE STRING "add a postfix, usually rd")
+SET(CMAKE_MINSIZEREL_POSTFIX "s" CACHE STRING "add a postfix, usually s")
+
+IF(UNIX AND NOT WIN32)
+  SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
+  SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -D_DEBUG")
+ENDIF()
+
+IF(CYGWIN)
+  SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
+  SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -D_DEBUG")
+ENDIF()
+
+IF(UNIX AND NOT WIN32 AND NOT APPLE)
+  IF(CMAKE_SIZEOF_VOID_P MATCHES "8")
+      SET(LIB_POSTFIX "64" CACHE STRING "suffix for 32/64 dir placement")
+      MARK_AS_ADVANCED(LIB_POSTFIX)
+  ENDIF()
+ENDIF()
+IF(NOT DEFINED LIB_POSTFIX)
+    SET(LIB_POSTFIX "")
+ENDIF()
 
 ################################################################################
 # Create lib directory if required

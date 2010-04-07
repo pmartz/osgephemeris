@@ -1,6 +1,5 @@
 set( HEADER_PATH ${CMAKE_SOURCE_DIR}/include/osgEphemeris )
 set( osgEphemeris_LIBS )
-set( CMAKE_MODULE_PATH "${osgEphemeris_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
 find_package(OpenSceneGraph 2.0.0 REQUIRED osgDB osgUtil osgText)
 
