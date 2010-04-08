@@ -437,6 +437,8 @@ void SkyDome::_updateDistributionCoefficients()
     _Cr = 0.5f;
     _Dr = _T * -0.63333f + 40.0f;
     _Er = 0.19f;
+    _horiz_atten_r = 0.0f;
+    _solar_atten_r = 0.0f;
 
     _Ag = _T * 0.00367f + 0.11f;
     _Bg = _T * -0.08f + 6.0f;
@@ -508,8 +510,8 @@ inline float SkyDome::_YDistributionFunction(const float /*theta*/, const float 
 inline float SkyDome::_RedFunction(const float /*theta*/, const float theta_0_1,
                                          const float /*gamma*/, const float gamma_1_0)
 {
-    return ( (_Ar * powf(theta_0_1, _Br))  // horizon light
-        + (_Cr * powf(gamma_1_0, _Dr))     // circumsolar light
+    return ( (_Ar * powf(theta_0_1, _Br) * (1.0f - _horiz_atten_r * _sunset_atten))  // horizon light
+        + (_Cr * powf(gamma_1_0, _Dr) * (1.0f - _solar_atten_r * _sunset_atten))     // circumsolar light
         + _Er )                            // overall light
         * _light_due_to_alt;
 }

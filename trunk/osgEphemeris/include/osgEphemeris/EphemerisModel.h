@@ -327,7 +327,7 @@ class OSGEPHEMERIS_EXPORT EphemerisModel : public osg::Group
         /**
           * Effect an update.  Used internally by the internal UpdateCallback
           */
-        void update();
+        virtual void update();
 
         /**
           Used internally
@@ -347,6 +347,22 @@ class OSGEPHEMERIS_EXPORT EphemerisModel : public osg::Group
 
         bool _inited;
         bool _init();
+
+        // Override one or many of these methods to customize how the 
+        // EphemerisModel creates its various members. A derived class could
+        // for example create an instance of a derived SkyDome class in 
+        // createSkyDome() instead of the osgEphemeris version. The overridden
+        // methods should only create the objects, assigning them to the 
+        // appropriate member variable below, and set it up appropriately. The
+        // _init() method will then add them as child of the EphemerisModel.
+        virtual void _createSunLightSource();
+        virtual void _createMoonLightSource();
+        virtual void _createSkyDome();
+        virtual void _createGroundPlane();
+        virtual void _createMoon();
+        virtual void _createPlanets();
+        virtual void _createStarField();
+
         /**
           Connect clipped or unclipped geometry, depending on if reflections are needed
           */

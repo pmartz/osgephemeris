@@ -153,12 +153,13 @@ class OSGEPHEMERIS_EXPORT SkyDome:  public Sphere
         float _Ar, _Br, _Cr, _Dr, _Er;
         float _Ag, _Bg, _Cg, _Dg, _Eg;
         float _Ab, _Bb, _Cb, _Db, _Eb;
+        float _horiz_atten_r, _solar_atten_r;
         float _horiz_atten_g, _solar_atten_g;
         float _horiz_atten_b, _solar_atten_b;
 
         int _current_tex_row;
 
-        void _updateDistributionCoefficients();
+        virtual void _updateDistributionCoefficients();
         void _updateZenithxyY();
         inline float _xDistributionFunction(const float theta, const float cos_theta,
                                            const float gamma, const float cos_gamma_sq);

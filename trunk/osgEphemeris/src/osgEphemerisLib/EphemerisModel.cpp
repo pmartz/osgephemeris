@@ -148,17 +148,23 @@ bool EphemerisModel::_init()
     // Sun Light Source
     if( _members & SUN_LIGHT_SOURCE )
     {
-        _sunLightSource = new osg::LightSource;
-        _sunLightSource->getLight()->setLightNum(_sunLightNum);
-        addChild( _sunLightSource.get() );
+        _createSunLightSource();
+        if (_sunLightSource.valid())
+        {
+            _sunLightSource->getLight()->setLightNum(_sunLightNum);
+            addChild( _sunLightSource.get() );
+        }
     }
 
     // Moon Light Source
     if( _members & MOON_LIGHT_SOURCE )
     {
-        _moonLightSource = new osg::LightSource;
-        _moonLightSource->getLight()->setLightNum(_moonLightNum);
-        addChild( _moonLightSource.get() );
+        _createMoonLightSource();
+        if (_moonLightSource.valid())
+        {
+            _moonLightSource->getLight()->setLightNum(_moonLightNum);
+            addChild( _moonLightSource.get() );
+        }
     }
 
     // Sky 
@@ -168,52 +174,103 @@ bool EphemerisModel::_init()
     // Sky Dome
     if( _members & SKY_DOME )
     {
-        _skyDome = new SkyDome( _skyDomeUseSouthernHemisphere, _skyDomeMirrorSouthernHemisphere );
-        _skyDome->setSunFudgeScale( _sunFudgeScale );
-        // Add this to _skyTx instead of _memberGroup.  _memberGroup is affected
-        // by clipping planes, which cause an ugly seam in the sky dome.  But since
-        // reflections are already handled internally by SkyDome, clipping planes
-        // are not required.  (Terry cannot figure out why ugly seam appears in SkyDome
-        // but not in other geometry.)
-        _skyTx->addChild(_skyDome.get());
+        _createSkyDome();
+        if (_skyDome.valid())
+        {
+            _skyDome->setSunFudgeScale( _sunFudgeScale );
+            // Add this to _skyTx instead of _memberGroup.  _memberGroup is affected
+            // by clipping planes, which cause an ugly seam in the sky dome.  But since
+            // reflections are already handled internally by SkyDome, clipping planes
+            // are not required.  (Terry cannot figure out why ugly seam appears in SkyDome
+            // but not in other geometry.)
+            _skyTx->addChild(_skyDome.get());
+        }
     }
 
     // Ground Plane
     if( _members & GROUND_PLANE )
     {
-        _groundPlane = new GroundPlane(SkyDome::getMeanDistanceToMoon());
-        _memberGroup->addChild( _groundPlane.get());
+        _createGroundPlane();
+        if (_groundPlane.valid())
+        {
+            _memberGroup->addChild( _groundPlane.get());
+        }
     }
 
     // Moon
     if( _members & MOON )
     {
-        _moon = new MoonModel;
-        _moonTx = new osg::MatrixTransform;
-        _moonTx->addChild( _moon.get() );
-        _memberGroup->addChild( _moonTx.get() );
+        _createMoon();
+        if (_moon.valid())
+        {
+            _moonTx = new osg::MatrixTransform;
+            _moonTx->addChild( _moon.get() );
+            _memberGroup->addChild( _moonTx.get() );
+        }
     }
 
     // Planets
     if( _members & PLANETS )
     {
-        _planets = new Planets;
-        _memberGroup->addChild( _planets.get() );
+        _createPlanets();
+        if (_planets.valid())
+        {
+            _memberGroup->addChild( _planets.get() );
+        }
     }
 
     // StarField
     if( _members & STAR_FIELD )
     {
-        _starField  = new StarField;
-        _starFieldTx = new osg::MatrixTransform;
-        _starFieldTx->addChild( _starField.get() );
-        _memberGroup->addChild( _starFieldTx.get() );
+        _createStarField();
+        if (_starField.valid())
+        {
+            _starFieldTx = new osg::MatrixTransform;
+            _starFieldTx->addChild( _starField.get() );
+            _memberGroup->addChild( _starFieldTx.get() );
+        }
     }
 
     _makeConnections();
 
     return _inited = true;
 }
+
+void EphemerisModel::_createSunLightSource()
+{
+    _sunLightSource = new osg::LightSource;
+}
+
+void EphemerisModel::_createMoonLightSource()
+{
+    _moonLightSource = new osg::LightSource;
+}
+
+void EphemerisModel::_createSkyDome()
+{
+    _skyDome = new SkyDome( _skyDomeUseSouthernHemisphere, _skyDomeMirrorSouthernHemisphere );
+}
+
+void EphemerisModel::_createGroundPlane()
+{
+    _groundPlane = new GroundPlane(SkyDome::getMeanDistanceToMoon());
+}
+
+void EphemerisModel::_createMoon()
+{
+    _moon = new MoonModel;
+}
+
+void EphemerisModel::_createPlanets()
+{
+    _planets = new Planets;
+}
+
+void EphemerisModel::_createStarField()
+{
+    _starField  = new StarField;
+}
+
 
 void EphemerisModel::_makeConnections()
 {
