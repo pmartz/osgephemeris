@@ -4,7 +4,10 @@ set(ProjectName osgEphemeris)
 
 set (CMAKE_BUILD_TYPE Release)
 
-set(CMAKE_MODULE_PATH "${osgEphemeris_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
+##
+##  For OSG 8.2.3 and forward, the CMake scripts that ship with OSG are sufficient
+##  For earlier versions, uncomment the following line
+##set(CMAKE_MODULE_PATH "${osgEphemeris_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
 PROJECT(${ProjectName})
 
