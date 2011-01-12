@@ -59,7 +59,7 @@ class SkyDomeUpdateCallback: public osg::NodeCallback
         }
 
     private:
-        osg::ref_ptr<SkyDome> _skyDome;
+        SkyDome* _skyDome;
 
         void _callDrawableCallbacks( osg::Geode *geode, osg::NodeVisitor *nv )
         {
