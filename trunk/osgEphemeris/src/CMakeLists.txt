@@ -1,5 +1,7 @@
 add_subdirectory( osgEphemerisLib )
 add_subdirectory( osgEphemerisPlugin )
-add_subdirectory( Viewer )
+
+# Not built with CMake
+# add_subdirectory( Viewer )
 
 

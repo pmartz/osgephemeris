@@ -1,19 +1,16 @@
 cmake_minimum_required(VERSION 2.6)
 
-set(ProjectName osgEphemeris)
+set( ProjectName osgEphemeris )
+project( ${ProjectName} )
 
 set (CMAKE_BUILD_TYPE Release)
 
-##
-##  For OSG 8.2.3 and forward, the CMake scripts that ship with OSG are sufficient
-##  For earlier versions, uncomment the following line
-##set(CMAKE_MODULE_PATH "${osgEphemeris_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
-PROJECT(${ProjectName})
+list( APPEND CMAKE_MODULE_PATH "${osgEphemeris_SOURCE_DIR}/CMakeModules" )
 
-# We have some custom .cmake scripts not in the official distribution.
-SET(CMAKE_MODULE_PATH
-    "${osgEphemeris_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
+# CMake 2.8 forward ships with scripts to find OSG. For older CMakes, uncomment this line:
+# list( APPEND CMAKE_MODULE_PATH "${osgEphemeris_SOURCE_DIR}/CMakeModules/OSGSupport" )
+
 
 IF(UNIX)
     # Some Unicies need explicit linkage to the Math library or the build fails.
