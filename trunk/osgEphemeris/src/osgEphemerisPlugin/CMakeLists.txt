@@ -10,7 +10,7 @@ include( FindOSGHelper )
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/include
-        ${OPENSCENEGRAPH_INCLUDE_DIRS}
+        ${OSG_INCLUDE_DIRS}
     )
 
 SET(TARGET_SRC
