@@ -2,12 +2,12 @@ set( HEADER_PATH ${CMAKE_SOURCE_DIR}/include/osgEphemeris )
 
 set( osgEphemerisViewer_LIBS osgEphemeris )
 
-find_package(OpenSceneGraph 2.0.0 REQUIRED osgDB osgUtil osgText osgViewer osgGA)
-
+#find_package(OpenSceneGraph 2.0.0 REQUIRED osgDB osgUtil osgText osgViewer osgGA)
+include( FindOSGHelper )
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/include
-        ${OPENSCENEGRAPH_INCLUDE_DIRS}
+        ${OSG_INCLUDE_DIRS}
     )
 
 SET(TARGET_SRC
