@@ -8,7 +8,7 @@ include( FindOSGHelper )
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/include
-        ${OSG_INCLUDE_DIRS}
+        ${OPENSCENEGRAPH_INCLUDE_DIRS}
     )
 
 IF(WIN32)
@@ -77,6 +77,7 @@ ENDIF()
 
 INSTALL(
         TARGETS ${TARGET_NAME}
+        EXPORT osgEphemeris-targets
         RUNTIME DESTINATION ${INSTALL_BINDIR}
         LIBRARY DESTINATION ${INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${INSTALL_ARCHIVEDIR}
