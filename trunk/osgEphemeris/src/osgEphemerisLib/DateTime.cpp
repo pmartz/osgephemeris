@@ -49,12 +49,12 @@ const char *DateTime::monthNames[12] = {
 };
 
 DateTime::DateTime(
-            int year,    
-            int month,   
-            int day,     
-            int hour,    
-            int minute,  
-            int second  )
+            uint32_t year,
+            uint32_t month,
+            uint32_t day,
+            uint32_t hour,
+            uint32_t minute,
+            uint32_t second  )
 {
     _tm.tm_year = year - 1900;
     _tm.tm_mon  = month - 1;
@@ -75,9 +75,12 @@ DateTime::DateTime( const DateTime &dt ):
     mktime(&_tm);
 }
 
-DateTime::DateTime() 
-{ 
-    //now();
+DateTime::DateTime(bool initialize)
+{
+    if( initialize )
+    {
+        now();
+    }
 }
 
 DateTime::DateTime( const struct tm &tm )
@@ -89,26 +92,29 @@ DateTime::DateTime( const struct tm &tm )
 void DateTime::now()
 {
     time_t utc = time(0L);
-    _tm = *localtime(&utc);
+    _tm = *gmtime(&utc);
+    _tm.tm_sec += _tzoff;
+    mktime(&_tm);
 }
 
-void DateTime::setYear( int year  )
+void DateTime::setYear( uint32_t year  )
 {
     _tm.tm_year = year - 1900;
     mktime(&_tm);
 }
 
-int DateTime::getYear() const
+uint32_t DateTime::getYear() const
 {
     return _tm.tm_year + 1900;
 }
 
-void DateTime::setMonth(int month)
+void DateTime::setMonth(uint32_t month)
 {
     _tm.tm_mon = month - 1;
     mktime(&_tm);
 }
-int DateTime::getMonth() const
+
+uint32_t DateTime::getMonth() const
 {
     return _tm.tm_mon + 1;
 }
@@ -118,28 +124,28 @@ std::string DateTime::getMonthString() const
     return std::string( monthNames[_tm.tm_mon] );
 }
 
-std::string DateTime::getMonthString(int month) // Will pass in 1-12
+std::string DateTime::getMonthString(uint32_t month) // Will pass in 1-12
 {
     return std::string( monthNames[(month-1)%12] );
 }
 
-void DateTime::setDayOfMonth(int day) 
+void DateTime::setDayOfMonth(uint32_t day)
 {
     _tm.tm_mday = day;
     mktime(&_tm);
 }
 
-int DateTime::getDayOfMonth() const
+uint32_t DateTime::getDayOfMonth() const
 {
     return _tm.tm_mday;
 }
 
-int DateTime::getDayOfYear() const
+uint32_t DateTime::getDayOfYear() const
 {
     return _tm.tm_yday;
 }
 
-int DateTime::getDayOfWeek() const
+uint32_t DateTime::getDayOfWeek() const
 {
     return _tm.tm_wday;
 }
@@ -149,40 +155,40 @@ std::string DateTime::getDayOfWeekString() const
     return std::string(weekDayNames[getDayOfWeek()]);
 }
 
-std::string DateTime::getDayOfWeekString(int wday) 
+std::string DateTime::getDayOfWeekString(uint32_t wday)
 {
     return std::string(weekDayNames[wday%7]);
 }
 
-void DateTime::setHour( int hour )
+void DateTime::setHour( uint32_t hour )
 {
     _tm.tm_hour = hour;
     mktime(&_tm);
 }
 
-int DateTime::getHour() const
+uint32_t DateTime::getHour() const
 {
     return _tm.tm_hour;
 }
 
-void DateTime::setMinute( int minute )
+void DateTime::setMinute( uint32_t minute )
 {
     _tm.tm_min = minute;
     mktime(&_tm);
 }
 
-int DateTime::getMinute() const
+uint32_t DateTime::getMinute() const
 {
     return _tm.tm_min;
 }
 
-void  DateTime::setSecond( int second )
+void  DateTime::setSecond( uint32_t second )
 {
     _tm.tm_sec = second;
     mktime(&_tm);
 }
 
-int DateTime::getSecond() const
+uint32_t DateTime::getSecond() const
 {
     return _tm.tm_sec;
 }
@@ -192,42 +198,44 @@ bool DateTime::isDaylightSavingsTime() const
     return (_tm.tm_isdst != 0);
 }
 
-double DateTime::getModifiedJulianDate( bool useSystemTimeZone ) const
+void DateTime::setTimeZoneOffset( bool useSystemTimeZone, int32_t hours )
 {
-    double mjd;
-    int b, d, m, y;
-    long c;
-
-    // Get GMT first
-    struct tm gmt = _tm;
     if( useSystemTimeZone )
     {
-        tzset();
-    #if defined( _DARWIN ) || defined( __APPLE__ )
-        gmt.tm_sec += gmt.tm_gmtoff;           /* Seconds east of UTC.  */
-    #else
-        gmt.tm_sec += timezone;         /* Seconds east of UTC.  */
-    #endif
-        mktime(&gmt);
+        _tzoff = _tm.tm_gmtoff;
+        return;
     }
-    // else
-    //    assume we already have GMT.
 
-    double day   =  (double)(gmt.tm_mday) +           // Day
-                    (double(gmt.tm_hour)/24.0) +      // hour
-                    (double(gmt.tm_min)/(24.0*60)) +   // minutes
-                    (double(gmt.tm_sec)/(24*3600.0));  // seconds
+    _tzoff = hours * 3600;
+}
 
-    int month = gmt.tm_mon + 1;
-    m = month;
-    int year = gmt.tm_year + 1900;
-    y = (year < 0) ? year + 1 : year;
+int32_t DateTime::getTimeZoneOffset() const
+{
+    return _tzoff/3600;
+}
+
+double DateTime::getModifiedJulianDate() const
+{
+    struct tm lmt = _tm;
+    lmt.tm_sec -= _tzoff;
+    mktime(&lmt);
+
+    double day   =  (double(lmt.tm_mday)) +           // Day
+                    (double(lmt.tm_hour)/24.0) +      // hour
+                    (double(lmt.tm_min)/(24.0*60)) +   // minutes
+                    (double(lmt.tm_sec)/(24*3600.0));  // seconds
+
+    int month = lmt.tm_mon + 1;
+    int m = month;
+    int year = lmt.tm_year + 1900;
+    int y = (year < 0) ? year + 1 : year;
     if( month < 3)
     {
         m += 12;
         y -= 1;
     }
 
+    int b = 0;
     if (year < 1582 || (year == 1582 && (month < 10 || (month == 10 && day < 15))))
     {
         b = 0;
@@ -239,6 +247,7 @@ double DateTime::getModifiedJulianDate( bool useSystemTimeZone ) const
         b = 2 - a + a/4;
     }
 
+    int c = 0;
     if (y < 0)
     {
         c = (long)((365.25*y) - 0.75) - 694025L;
@@ -248,25 +257,17 @@ double DateTime::getModifiedJulianDate( bool useSystemTimeZone ) const
         c = (long)(365.25*y) - 694025L;
     }
 
-    d = (int)(30.6001*(m+1));
+    int d = (int)(30.6001*(m+1));
 
-    mjd = b + c + d + day - 0.5;
+    double mjd = b + c + d + day - 0.5;
 
     return mjd;
 }
 
 DateTime DateTime::getGMT() const
 {
-    struct tm gmt = _tm;
-
-    tzset();
-#if defined( _DARWIN ) || defined( __APPLE__ )
-    gmt.tm_sec += gmt.tm_gmtoff;           /* Seconds east of UTC.  */
-#else
-    gmt.tm_sec += timezone;         /* Seconds east of UTC.  */
-#endif
-    mktime(&gmt);
-
-    return DateTime(gmt);
+    time_t utc = time(0L);
+    return DateTime(*gmtime(&utc));
 }
+
 
