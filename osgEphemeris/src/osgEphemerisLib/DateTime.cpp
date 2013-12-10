@@ -200,11 +200,13 @@ bool DateTime::isDaylightSavingsTime() const
 
 void DateTime::setTimeZoneOffset( bool useSystemTimeZone, int32_t hours )
 {
+#ifndef WIN32
     if( useSystemTimeZone )
     {
         _tzoff = _tm.tm_gmtoff;
         return;
     }
+#endif
 
     _tzoff = hours * 3600;
 }
