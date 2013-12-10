@@ -39,6 +39,7 @@ osgEphemeris::EphemerisData *ephemData = 0L;
 static Fl_Value_Input *latInput = 0L;
 static Fl_Value_Input *longInput = 0L;
 static Fl_Value_Input *turbInput = 0L;
+static Fl_Choice *tzchoice = 0L;
 static Fl_Choice *month_choice = 0L;
 static Fl_Value_Input *monthDayInput = 0L;
 static Fl_Value_Input *yearInput = 0L;
@@ -52,6 +53,7 @@ enum Which {
     E_Latitude,
     E_Longitude,
     E_Turbidity,
+    E_TZOffset,
     E_DateByDoy,
     E_MonthDay,
     E_Year,
@@ -70,6 +72,7 @@ void sync()
     longInput->value(ephemData->longitude);
 
     turbInput->value(ephemData->turbidity);
+    tzchoice->value( ephemData->dateTime.getTimeZoneOffset() + 12 );
 
     month_choice->value( ephemData->dateTime.getMonth() - 1 );
     monthDayInput->value( ephemData->dateTime.getDayOfMonth() );
@@ -279,6 +282,19 @@ static void s_setMonthCallback( Fl_Widget *w, void *data )
     }
 }
 
+static void s_setTimeZoneCallback( Fl_Widget *w, void *data )
+{
+    Fl_Choice *choice = dynamic_cast<Fl_Choice *>(w);
+    if( choice != 0L )
+    {
+        if( ephemData != 0L )
+        {
+            ephemData->dateTime.setTimeZoneOffset( false, choice->value() - 12 );
+            sync();
+        }
+    }
+}
+
 static void s_valueInputCallback( Fl_Widget *w, void *data )
 {
     Fl_Value_Input *s = dynamic_cast<Fl_Value_Input *>(w);
@@ -303,6 +319,11 @@ static void s_valueInputCallback( Fl_Widget *w, void *data )
                 case E_Turbidity:
                     if( ephemData != 0L )
                         ephemData->turbidity = s->value();
+                    break;
+
+                case E_TZOffset:
+                    if( ephemData != 0L )
+                        ephemData->dateTime.setTimeZoneOffset( false, (int32_t)(s->value()) );
                     break;
 
                 case E_MonthDay:
@@ -371,6 +392,47 @@ int main( int argc, char **argv )
     turbInput->step( 0.1 );
     turbInput->value(ephemData->turbidity);
 
+    static Fl_Menu_Item tzchoices[] = {
+      {"-12",  0, 0L, 0L},
+      {"-11",  0, 0L, 0L},
+      {"-10",  0, 0L, 0L},
+      {"-9",  0, 0L, 0L},
+      {"-8",  0, 0L, 0L},
+      {"-7",  0, 0L, 0L},
+      {"-6",  0, 0L, 0L},
+      {"-5",  0, 0L, 0L},
+      {"-4",  0, 0L, 0L},
+      {"-3",  0, 0L, 0L},
+      {"-2",  0, 0L, 0L},
+      {"-1",  0, 0L, 0L},
+      {"0",  0, 0L, 0L},
+      {"1",  0, 0L, 0L},
+      {"2",  0, 0L, 0L},
+      {"3",  0, 0L, 0L},
+      {"4",  0, 0L, 0L},
+      {"5",  0, 0L, 0L},
+      {"6",  0, 0L, 0L},
+      {"7",  0, 0L, 0L},
+      {"8",  0, 0L, 0L},
+      {"9",  0, 0L, 0L},
+      {"10",  0, 0L, 0L},
+      {"11",  0, 0L, 0L},
+      {"12",  0, 0L, 0L},
+    };
+
+    tzchoice = new Fl_Choice( 80, 65, 75, 20, "TimeZone" );
+    tzchoice->menu( tzchoices );
+    tzchoice->value( ephemData->dateTime.getTimeZoneOffset() + 12 );
+    tzchoice->callback( s_setTimeZoneCallback, 0L );
+
+    turbInput = new Fl_Value_Input( 80, 95, 75, 20, "Turbidity" );
+    turbInput->box( FL_EMBOSSED_BOX );
+    turbInput->callback( s_valueInputCallback, (void *)E_Turbidity );
+    turbInput->minimum( 1.0 );
+    turbInput->maximum( 60.0 );
+    turbInput->step( 0.1 );
+    turbInput->value(ephemData->turbidity);
+
     static Fl_Menu_Item phase_choices[] = {
       {"January",  0, 0L, 0L},
       {"Feburary", 0, 0L, 0L},
@@ -387,12 +449,12 @@ int main( int argc, char **argv )
       {0}
     };
 
-    month_choice = new Fl_Choice( 10, 100, 100, 25, "" );
+    month_choice = new Fl_Choice( 10, 120, 100, 25, "" );
     month_choice->menu( phase_choices );
     month_choice->value( ephemData->dateTime.getMonth() - 1 );
     month_choice->callback( s_setMonthCallback, 0L );
 
-    monthDayInput = new Fl_Value_Input( 115, 100, 25, 20, "" );
+    monthDayInput = new Fl_Value_Input( 115, 120, 25, 20, "" );
     monthDayInput->box( FL_EMBOSSED_BOX );
     monthDayInput->minimum( 1 );
     monthDayInput->maximum( 31 );
@@ -400,7 +462,7 @@ int main( int argc, char **argv )
     monthDayInput->value( ephemData->dateTime.getDayOfMonth());
     monthDayInput->callback( s_valueInputCallback, (void *)E_MonthDay );
 
-    yearInput = new Fl_Value_Input( 145, 100, 40, 20, "" );
+    yearInput = new Fl_Value_Input( 145, 120, 40, 20, "" );
     yearInput->box( FL_EMBOSSED_BOX );
     yearInput->minimum( 0 );
     yearInput->maximum( 9999 );
@@ -408,14 +470,14 @@ int main( int argc, char **argv )
     yearInput->value(ephemData->dateTime.getYear());
     yearInput->callback( s_valueInputCallback, (void *)E_Year );
 
-    droller = new Fl_Roller( 50, 130, 100, 15 );
+    droller = new Fl_Roller( 50, 150, 100, 15 );
     droller->minimum(1);
     droller->maximum(365);
     droller->step(0.25);
     droller->type( FL_HORIZONTAL );
     droller->callback( s_updateDateByDoy, (void *)0L );
 
-    hourInput = new Fl_Value_Input( 50, 160, 25, 20, "" );
+    hourInput = new Fl_Value_Input( 50, 175, 25, 20, "" );
     hourInput->box( FL_EMBOSSED_BOX );
     hourInput->minimum( 0 );
     hourInput->maximum( 23 );
@@ -423,9 +485,9 @@ int main( int argc, char **argv )
     hourInput->value(12);
     hourInput->callback( s_valueInputCallback, (void *)E_Hour );
 
-    new Fl_Box( 73, 163, 10, 10, ":" );
+    new Fl_Box( 73, 178, 10, 10, ":" );
 
-    minInput = new Fl_Value_Input( 80, 160, 25, 20, "" );
+    minInput = new Fl_Value_Input( 80, 175, 25, 20, "" );
     minInput->box( FL_EMBOSSED_BOX );
     minInput->minimum( 0 );
     minInput->maximum( 59 );
@@ -433,9 +495,9 @@ int main( int argc, char **argv )
     minInput->value(12);
     minInput->callback( s_valueInputCallback, (void *)E_Minute );
 
-    new Fl_Box( 103, 163, 10, 10, ":" );
+    new Fl_Box( 103, 178, 10, 10, ":" );
 
-    secInput = new Fl_Value_Input( 110, 160, 25, 20, "" );
+    secInput = new Fl_Value_Input( 110, 175, 25, 20, "" );
     secInput->box( FL_EMBOSSED_BOX );
     secInput->minimum( 0 );
     secInput->maximum( 59 );
@@ -443,7 +505,7 @@ int main( int argc, char **argv )
     secInput->value(0);
     secInput->callback( s_valueInputCallback, (void *)E_Second );
 
-    troller = new Fl_Roller( 50, 190, 100, 15 );
+    troller = new Fl_Roller( 50, 200, 100, 15 );
     troller->type( FL_HORIZONTAL );
     troller->minimum(1);
     troller->maximum(86399);

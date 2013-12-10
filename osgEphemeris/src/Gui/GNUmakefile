@@ -6,7 +6,7 @@ CXXFILES = \
 
 
 COMPILER_INCLUDE += -I$(TOPDIR)/include
-LINKER_ARGS +=  -L$(TOPDIR)/lib/$(OS)$(ARCH)
+LINKER_ARGS +=  -L$(TOPDIR)/lib/
 
 LIBS = -lfltk -losgEphemeris -losgUtil -losgText -losg
 
