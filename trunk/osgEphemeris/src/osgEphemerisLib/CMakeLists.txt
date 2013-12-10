@@ -42,6 +42,7 @@ SET(PUBLIC_HEADERS
 		${HEADER_PATH}/EphemerisUpdateCallback.h
 		${HEADER_PATH}/Export.h
 		${HEADER_PATH}/GroundPlane.h
+		${HEADER_PATH}/IntTypes.h
 		${HEADER_PATH}/MoonModel.h
 		${HEADER_PATH}/Planets.h
 		${HEADER_PATH}/Shmem.h
